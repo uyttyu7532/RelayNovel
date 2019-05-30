@@ -3,6 +3,7 @@ import java.io.*;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SocketChannel;
 
+import kr.ac.konkuk.ccslab.cm.entity.CMUser;
 import kr.ac.konkuk.ccslab.cm.event.CMDummyEvent;
 import kr.ac.konkuk.ccslab.cm.event.CMEvent;
 import kr.ac.konkuk.ccslab.cm.event.CMEventHandler;
@@ -15,11 +16,11 @@ import kr.ac.konkuk.ccslab.cm.event.CMUserEvent;
 import kr.ac.konkuk.ccslab.cm.event.CMUserEventField;
 import kr.ac.konkuk.ccslab.cm.info.CMConfigurationInfo;
 import kr.ac.konkuk.ccslab.cm.info.CMInfo;
+import kr.ac.konkuk.ccslab.cm.info.CMInteractionInfo;
 import kr.ac.konkuk.ccslab.cm.manager.CMDBManager;
 import kr.ac.konkuk.ccslab.cm.manager.CMFileTransferManager;
 import kr.ac.konkuk.ccslab.cm.manager.CMInteractionManager;
 import kr.ac.konkuk.ccslab.cm.stub.CMServerStub;
-
 
 public class CMServerEventHandler implements CMEventHandler {
 	private CMServerStub m_serverStub;
@@ -135,7 +136,7 @@ public class CMServerEventHandler implements CMEventHandler {
 			return;
 		}
 	}
-	
+/*	
 	private void processDummyEvent(CMEvent cme)
 	{
 		CMDummyEvent due = (CMDummyEvent) cme;
@@ -143,6 +144,37 @@ public class CMServerEventHandler implements CMEventHandler {
 		System.out.println("dummy msg: "+due.getDummyInfo());
 		return;
 	}
+*/	
+	private void processDummyEvent(CMEvent cme)
+	   {
+	      CMDummyEvent due = (CMDummyEvent) cme;
+	      if(due.getDummyInfo().equals("listrequest"))//dummy가 Hello이면 특정 경로에 있는 파일 이름이 묶인 string만들기
+	      {
+	         String path = ".\\server-file-path\\common_directory";
+	         File dir = new File(path); 
+
+	         File[] fileList = dir.listFiles(); 
+	         String list="";
+
+	            for(int i = 0 ; i < fileList.length ; i++){
+
+	               File file = fileList[i]; 
+
+	               if(file.isFile()){ // 파일이 있다면 파일 이름 출력
+	                  list=list.concat(file.getName())+"\t";
+	               }
+	            
+	      }
+	            CMInteractionInfo interInfo = m_serverStub.getCMInfo().getInteractionInfo();
+	            CMUser myself = interInfo.getMyself();
+	            CMDummyEvent due2 = new CMDummyEvent();
+	            due2.setHandlerSession(myself.getCurrentSession());
+	            due2.setHandlerGroup(myself.getCurrentGroup());
+	            due2.setDummyInfo(list);
+	            m_serverStub.send(due2, due.getSender());
+	            due2 = null;
+	      return;}
+	   }
 	
 	private void processUserEvent(CMEvent cme)
 	{
@@ -328,8 +360,8 @@ public class CMServerEventHandler implements CMEventHandler {
 			
 			
 			String strFile = fe.getFileName();
-			String beforeFilePath = "C:\\Users\\user\\git\\CMTest\\CMTest\\server-file-path\\jiyoung\\"+fe.getSenderName()+"\\"+strFile;//가지고 올 경로와 파일이름
-			String path="C:\\Users\\user\\git\\CMTest\\CMTest\\server-file-path"+"/"+"common_directory";//커먼디렉토리의 경로
+			String beforeFilePath = ".\\server-file-path\\"+fe.getSenderName()+"\\"+strFile;//가지고 올 경로와 파일이름
+			String path=".\\server-file-path"+"/"+"common_directory";//커먼디렉토리의 경로
 			String filePath = path+"/"+strFile;//새 이름으로 변경-->우리는 필요 없음 그냥 그이름 사용
 			File dir = new File(path);//공통디렉토리를 만든다 폴더
 			
