@@ -358,8 +358,13 @@ public class CMClientEventHandler implements CMEventHandler {
 	private void processDummyEvent(CMEvent cme)
 	{
 		CMDummyEvent due = (CMDummyEvent) cme;
-		System.out.println("session("+due.getHandlerSession()+"), group("+due.getHandlerGroup()+")");
-		System.out.println("dummy msg: "+due.getDummyInfo());
+		/*System.out.println("session("+due.getHandlerSession()+"), group("+due.getHandlerGroup()+")");
+		System.out.println("dummy msg: "+due.getDummyInfo());*/
+		String titlelist[]=due.getDummyInfo().split("\t");//\t를 기준으로 소설제목 나누기
+		for(int i=0; i<titlelist.length;i++)
+		{
+			System.out.println(titlelist[i]);
+		}
 		return;
 	}
 	
