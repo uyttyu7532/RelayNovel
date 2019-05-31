@@ -54,11 +54,11 @@ public class CMClientApp {
 	   static JTextField writerbox= new JTextField();
 	   static JTextArea textbox2= new JTextArea();
 	   static JTextField writerbox2= new JTextField();
-	   static JLabel titlelabel = new JLabel("Á¦¸ñ");
-	   static JLabel novellabel = new JLabel("³»¿ë");
-	   static JLabel novellabel2 = new JLabel("Ãß°¡ÇÒ ³»¿ë");
-	   static JLabel writerlabel = new JLabel("ÀÛ¼ºÀÚ");
-	   static JLabel writerlabel2 = new JLabel("ÀÛ¼ºÀÚ");
+	   static JLabel titlelabel = new JLabel("ì œëª©");
+	   static JLabel novellabel = new JLabel("ë‚´ìš©");
+	   static JLabel novellabel2 = new JLabel("ì¶”ê°€í•  ë‚´ìš©");
+	   static JLabel writerlabel = new JLabel("ì‘ì„±ì");
+	   static JLabel writerlabel2 = new JLabel("ì‘ì„±ì");
 	   static JTextArea oldtextbox= new JTextArea();
 	
 	public CMClientApp()
@@ -92,7 +92,7 @@ public class CMClientApp {
 		while(m_bRun)
 		{
 		
-			System.out.println("1:¼Ò¼³ÀĞ±â   2:¼Ò¼³ÀÛ¼º   3:Á¾·á");
+			System.out.println("1:ì†Œì„¤ì½ê¸°   2:ì†Œì„¤ì‘ì„±   3:ì¢…ë£Œ");
 			//System.out.println("Type \"0\" for menu.");
 			System.out.print("> ");
 			try {
@@ -117,14 +117,14 @@ public class CMClientApp {
 				break;
 			case 2:
 			{
-				//»ç¿ëÀÚ¿¡°Ô »õ·Î ±Û¾²±â¿Í ÀÌ¾î¾²±â¸¦ ¹°¾îº»´Ù
-				System.out.println("1:¼Ò¼³»õ·Î¾²±â            2:¼Ò¼³ÀÌ¾î¾²±â");
-				//1¹øÀÌ¸é »õ·ÎÀÛ¼º  2¹øÀÌ¸é ÀÌ¾î¼­ ÀÛ¼º-->ÀÔ·ÂÀ» ¹Ş´Â´Ù
+				//ì‚¬ìš©ìì—ê²Œ ìƒˆë¡œ ê¸€ì“°ê¸°ì™€ ì´ì–´ì“°ê¸°ë¥¼ ë¬¼ì–´ë³¸ë‹¤
+				System.out.println("1:ì†Œì„¤ìƒˆë¡œì“°ê¸°            2:ì†Œì„¤ì´ì–´ì“°ê¸°");
+				//1ë²ˆì´ë©´ ìƒˆë¡œì‘ì„±  2ë²ˆì´ë©´ ì´ì–´ì„œ ì‘ì„±-->ì…ë ¥ì„ ë°›ëŠ”ë‹¤
 				Scanner scanner = new Scanner(System.in);
 				int ans = scanner.nextInt();
-				//1¹øÀÏ °æ¿ì »õ·ÎÀÛ¼º
+				//1ë²ˆì¼ ê²½ìš° ìƒˆë¡œì‘ì„±
 				if(ans==1) {newtext();}
-				//2¹øÀÏ °æ¿ì ÀÌ¾î¼­ ÀÛ¼º
+				//2ë²ˆì¼ ê²½ìš° ì´ì–´ì„œ ì‘ì„±
 				else if(ans==2) {appendnovel();}
 				
 			}
@@ -2755,7 +2755,7 @@ public class CMClientApp {
 	}
 	
 	
-	public static void listrequest() //²À ÇÊ¿äÇÑ ÇÔ¼ö --> ÆÄÀÏ ¸®½ºÆ® ¿äÃ»
+	public static void listrequest() //ê¼­ í•„ìš”í•œ í•¨ìˆ˜ --> íŒŒì¼ ë¦¬ìŠ¤íŠ¸ ìš”ì²­
 	{
 	   CMInteractionInfo interInfo = m_clientStub.getCMInfo().getInteractionInfo();
 	   CMUser myself = interInfo.getMyself();
@@ -2779,7 +2779,7 @@ public class CMClientApp {
 		public static void readnovel() throws IOException {
 			listrequest();
 			Scanner sc = new Scanner(System.in);
-		System.out.println("ÀĞÀ»¼Ò¼³ÀÌ¸§ÀÔ·Â: ");
+		//System.out.println("ì½ì„ì†Œì„¤ì´ë¦„ì…ë ¥: ");
 			novelname = sc.next();
 			readtext();
 		}
@@ -2787,12 +2787,12 @@ public class CMClientApp {
 		public static void appendnovel() throws IOException {
 			listrequest();
 			Scanner sc = new Scanner(System.in);
-		System.out.println("ÀÌ¾î¾µ¼Ò¼³ÀÌ¸§ÀÔ·Â: ");
+		System.out.println("ì´ì–´ì“¸ì†Œì„¤ì´ë¦„ì…ë ¥: ");
 			novelname = sc.next();
 			appendtext();
 		}
 	
-	   public static void readtext() throws IOException{ //±Û ÀĞ±â
+	   public static void readtext() throws IOException{ //ê¸€ ì½ê¸°
 		      JFrame frame = new JFrame("mycm");
 		      frame.setSize(1000,500);
 
@@ -2812,7 +2812,7 @@ public class CMClientApp {
 		   }
 		   
 		   
-		   public static void newtext(){ //±Û »õ·Î ¾²±â(form: Á¦¸ñ ³»¿ë ÀÛ¼ºÀÚ) 
+		   public static void newtext(){ //ê¸€ ìƒˆë¡œ ì“°ê¸°(form: ì œëª© ë‚´ìš© ì‘ì„±ì) 
 		      JFrame frame = new JFrame("mycm");
 		      frame.setSize(1000,500);
 
@@ -2831,7 +2831,7 @@ public class CMClientApp {
 		      frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(),BoxLayout.Y_AXIS));
 
 
-		      JButton savebutton = new JButton("ÀúÀå");
+		      JButton savebutton = new JButton("ì €ì¥");
 		      savebutton.addActionListener(new ActionListener() {
 		         public void actionPerformed(ActionEvent arg0) {
 		            try {
@@ -2850,11 +2850,11 @@ public class CMClientApp {
 		   
 		   
 		   @SuppressWarnings("deprecation")
-		   public static void appendtext() throws IOException{ //±âÁ¸ ±Û°ú »õ·Î¿î ±ÛÀ» ÇÕÄ£´Ù (form: ³»¿ë + ÀÛ¼ºÀÚ)
+		   public static void appendtext() throws IOException{ //ê¸°ì¡´ ê¸€ê³¼ ìƒˆë¡œìš´ ê¸€ì„ í•©ì¹œë‹¤ (form: ë‚´ìš© + ì‘ì„±ì)
 		      JFrame frame = new JFrame("mycm");
 		      frame.setSize(1000,500);
 
-		      File file = new File(".\\server-file-path\\common_directory\\"+novelname+".txt");//¼­¹öÀÇ °øÅëµğ·ºÅä¸®¿¡ ÀÖ´Â ÆÄÀÏÀ» requestfile¿äÃ»ÇÏ°í ±× ¹Ş¾Æ¿ÂÆÄÀÏÀ» ÀĞ¾î¾ßÇÔ
+		      File file = new File(".\\server-file-path\\common_directory\\"+novelname+".txt");//ì„œë²„ì˜ ê³µí†µë””ë ‰í† ë¦¬ì— ìˆëŠ” íŒŒì¼ì„ requestfileìš”ì²­í•˜ê³  ê·¸ ë°›ì•„ì˜¨íŒŒì¼ì„ ì½ì–´ì•¼í•¨
 		      FileReader reader = new FileReader(file);
 		      BufferedReader buf = new BufferedReader(reader);
 		      String oldtext="";
@@ -2878,7 +2878,7 @@ public class CMClientApp {
 		      frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(),BoxLayout.Y_AXIS));
 		      //frame.setVisible(true);   
 
-		      JButton savebutton = new JButton("ÀúÀå");
+		      JButton savebutton = new JButton("ì €ì¥");
 		      savebutton.addActionListener(new ActionListener() {
 		         public void actionPerformed(ActionEvent arg0) {
 		            try {
@@ -2896,23 +2896,23 @@ public class CMClientApp {
 
 		   }
 		   
-		   public static void saveforappend() throws IOException{ //±âÁ¸ ±Û + »õ·Î ÀÛ¼ºÇÑ ±Û(³»¿ë+ÀÛ¼ºÀÚ)
+		   public static void saveforappend() throws IOException{ //ê¸°ì¡´ ê¸€ + ìƒˆë¡œ ì‘ì„±í•œ ê¸€(ë‚´ìš©+ì‘ì„±ì)
 		      Calendar now=Calendar.getInstance();
 		      Date date=now.getTime();
 		      text = oldtextbox.getText()+"\n"+textbox2.getText()+"\n"+date+"-----------------------------------------"+writerbox2.getText();
-		      FileWriter fw = new FileWriter(".\\server-file-path\\common_directory\\"+novelname+".txt"); //¼­¹öÀÇ °øÅëµğ·ºÅä¸®¿¡ ÀÖ´Â ÆÄÀÏÀ» requestfile¿äÃ»ÇÏ°í ±× ¹Ş¾Æ¿ÂÆÄÀÏÀ» ÀĞ¾î¾ßÇÔ
+		      FileWriter fw = new FileWriter(".\\server-file-path\\common_directory\\"+novelname+".txt"); //ì„œë²„ì˜ ê³µí†µë””ë ‰í† ë¦¬ì— ìˆëŠ” íŒŒì¼ì„ requestfileìš”ì²­í•˜ê³  ê·¸ ë°›ì•„ì˜¨íŒŒì¼ì„ ì½ì–´ì•¼í•¨
 		      fw.write(text);
 		      fw.close();
 		   }
 
 
-		   public static void savefornew() throws IOException{ //»õ·Î¿î ±Û ÀúÀå
+		   public static void savefornew() throws IOException{ //ìƒˆë¡œìš´ ê¸€ ì €ì¥
 		      boolean bReturn = false;
 		      String title;
 		      
 		      Calendar now=Calendar.getInstance();
 		      Date date=now.getTime();
-		      text = "Á¦¸ñ: "+titlebox.getText()+"\n"+textbox.getText()+"\n"+date+"-----------------------------------------"+writerbox.getText();
+		      text = "ì œëª©: "+titlebox.getText()+"\n"+textbox.getText()+"\n"+date+"-----------------------------------------"+writerbox.getText();
 		      System.out.println(text);
 		      FileWriter fw = new FileWriter("./client-file-path\\"+titlebox.getText()+".txt");
 		      title = titlebox.getText()+".txt";
