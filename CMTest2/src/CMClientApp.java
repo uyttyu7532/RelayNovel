@@ -2922,6 +2922,8 @@ public class CMClientApp {
 		      FileWriter fw = new FileWriter(".\\server-file-path\\common_directory\\"+novelname+".txt"); //서버의 공통디렉토리에 있는 파일을 requestfile요청하고 그 받아온파일을 읽어야함
 		      fw.write(text);
 		      fw.close();
+		      m_clientStub.pushFile(".\\client-file-path\\"+novelname+".txt","SERVER"); //
+
 		   }
 
 
