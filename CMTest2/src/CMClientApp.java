@@ -2777,18 +2777,37 @@ public class CMClientApp {
 	}
 	
 		public static void readnovel() throws IOException {
-			listrequest();
+			/*listrequest();
 			Scanner sc = new Scanner(System.in);
 		//System.out.println("읽을소설이름입력: ");
 			novelname = sc.next();
+			readtext();*/
+			while(true){
+				listrequest();
+				Scanner sc = new Scanner(System.in);
+				novelname = sc.next();
+				File file = new File(".\\server-file-path\\common_directory\\"+novelname+".txt");
+				if(file.isFile()) break;
+				System.out.println("존재하지 않는 소설입니다. 다시 입력하세요.");
+			}
+			
 			readtext();
 		}
 		
 		public static void appendnovel() throws IOException {
-			listrequest();
+			/*listrequest();
 			Scanner sc = new Scanner(System.in);
 		//System.out.println("이어쓸소설이름입력: ");
 			novelname = sc.next();
+			appendtext();*/
+			while(true){
+				listrequest();
+				Scanner sc = new Scanner(System.in);
+				novelname = sc.next();
+				File file = new File(".\\server-file-path\\common_directory\\"+novelname+".txt");
+				if(file.isFile()) break;
+				System.out.println("존재하지 않는 소설입니다. 다시 입력하세요.");
+			}
 			appendtext();
 		}
 	
