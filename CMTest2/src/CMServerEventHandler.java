@@ -148,7 +148,7 @@ public class CMServerEventHandler implements CMEventHandler {
 	private void processDummyEvent(CMEvent cme)
 	   {
 	      CMDummyEvent due = (CMDummyEvent) cme;
-	      if(due.getDummyInfo().equals("listrequest"))//dummy°¡ HelloÀÌ¸é Æ¯Á¤ °æ·Î¿¡ ÀÖ´Â ÆÄÀÏ ÀÌ¸§ÀÌ ¹­ÀÎ string¸¸µé±â
+	      if(due.getDummyInfo().equals("listrequest"))//dummyê°€ Helloì´ë©´ íŠ¹ì • ê²½ë¡œì— ìˆëŠ” íŒŒì¼ ì´ë¦„ì´ ë¬¶ì¸ stringë§Œë“¤ê¸°
 	      {
 	         String path = ".\\server-file-path\\common_directory";
 	         File dir = new File(path); 
@@ -160,7 +160,7 @@ public class CMServerEventHandler implements CMEventHandler {
 
 	               File file = fileList[i]; 
 
-	               if(file.isFile()){ // ÆÄÀÏÀÌ ÀÖ´Ù¸é ÆÄÀÏ ÀÌ¸§ Ãâ·Â
+	               if(file.isFile()){ // íŒŒì¼ì´ ìˆë‹¤ë©´ íŒŒì¼ ì´ë¦„ ì¶œë ¥
 	                  list=list.concat(file.getName())+"\t";
 	               }
 	            
@@ -360,16 +360,17 @@ public class CMServerEventHandler implements CMEventHandler {
 			
 			
 			String strFile = fe.getFileName();
-			String beforeFilePath = ".\\server-file-path\\"+fe.getSenderName()+"\\"+strFile;//°¡Áö°í ¿Ã °æ·Î¿Í ÆÄÀÏÀÌ¸§
-			String path=".\\server-file-path"+"/"+"common_directory";//Ä¿¸Õµğ·ºÅä¸®ÀÇ °æ·Î
-			String filePath = path+"/"+strFile;//»õ ÀÌ¸§À¸·Î º¯°æ-->¿ì¸®´Â ÇÊ¿ä ¾øÀ½ ±×³É ±×ÀÌ¸§ »ç¿ë
-			File dir = new File(path);//°øÅëµğ·ºÅä¸®¸¦ ¸¸µç´Ù Æú´õ
+			String beforeFilePath = ".\\server-file-path\\"+fe.getSenderName()+"\\"+strFile;//ê°€ì§€ê³  ì˜¬ ê²½ë¡œì™€ íŒŒì¼ì´ë¦„
+			String path=".\\server-file-path"+"/"+"common_directory";//ì»¤ë¨¼ë””ë ‰í† ë¦¬ì˜ ê²½ë¡œ
+			String filePath = path+"/"+strFile;//ìƒˆ ì´ë¦„ìœ¼ë¡œ ë³€ê²½-->ìš°ë¦¬ëŠ” í•„ìš” ì—†ìŒ ê·¸ëƒ¥ ê·¸ì´ë¦„ ì‚¬ìš©
+			File dir = new File(path);//ê³µí†µë””ë ‰í† ë¦¬ë¥¼ ë§Œë“ ë‹¤ í´ë”
 			
-				   if (!dir.exists()) { //Æú´õ ¾øÀ¸¸é Æú´õ »ı¼º
+				   if (!dir.exists()) { //í´ë” ì—†ìœ¼ë©´ í´ë” ìƒì„±
 			            dir.mkdirs();
 			        }
-				   File file =new File(beforeFilePath); //»õ·Î¿î ÆÄÀÏÀ» ¸¸µç´Ù
+				   File file =new File(beforeFilePath); //ìƒˆë¡œìš´ íŒŒì¼ì„ ë§Œë“ ë‹¤
 				   file.renameTo(new File(filePath));
+				System.out.println("ì €ì¥ë˜ì—ˆìŠµë‹ˆë‹¤.");
 			
 			
 			if(m_bDistFileProc)
