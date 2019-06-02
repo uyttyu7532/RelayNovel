@@ -2787,7 +2787,7 @@ public class CMClientApp {
 		public static void appendnovel() throws IOException {
 			listrequest();
 			Scanner sc = new Scanner(System.in);
-		System.out.println("이어쓸소설이름입력: ");
+		//System.out.println("이어쓸소설이름입력: ");
 			novelname = sc.next();
 			appendtext();
 		}
