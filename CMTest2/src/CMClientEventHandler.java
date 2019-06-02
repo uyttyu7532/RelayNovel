@@ -365,7 +365,7 @@ public class CMClientEventHandler implements CMEventHandler {
 		{
 			System.out.println(titlelist[i]);
 		}
-		System.out.println("소설이름을 입력: ");
+		System.out.println("소설이름을 입력하세요: ");
 		return;
 	}
 	
