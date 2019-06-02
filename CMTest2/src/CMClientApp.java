@@ -1,3 +1,5 @@
+package cm;
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -113,7 +115,7 @@ public class CMClientApp {
 			switch(nCommand)
 			{
 			case 1:
-				readnovel();
+				readNovel();
 				break;
 			case 2:
 			{
@@ -123,9 +125,9 @@ public class CMClientApp {
 				Scanner scanner = new Scanner(System.in);
 				int ans = scanner.nextInt();
 				//1번일 경우 새로작성
-				if(ans==1) {newtext();}
+				if(ans==1) {newText();}
 				//2번일 경우 이어서 작성
-				else if(ans==2) {appendnovel();}
+				else if(ans==2) {appendNovel();}
 				
 			}
 			break;
@@ -2755,7 +2757,7 @@ public class CMClientApp {
 	}
 	
 	
-	public static void listrequest() //꼭 필요한 함수 --> 파일 리스트 요청
+	public static void listRequest() //꼭 필요한 함수 --> 파일 리스트 요청
 	{
 	   CMInteractionInfo interInfo = m_clientStub.getCMInfo().getInteractionInfo();
 	   CMUser myself = interInfo.getMyself();
@@ -2776,14 +2778,14 @@ public class CMClientApp {
 	   
 	}
 	
-		public static void readnovel() throws IOException {
+		public static void readNovel() throws IOException {
 			/*listrequest();
 			Scanner sc = new Scanner(System.in);
 		//System.out.println("읽을소설이름입력: ");
 			novelname = sc.next();
-			readtext();*/
+			readText();*/
 			while(true){
-				listrequest();
+				listRequest();
 				Scanner sc = new Scanner(System.in);
 				novelname = sc.next();
 				File file = new File(".\\server-file-path\\common_directory\\"+novelname+".txt");
@@ -2791,27 +2793,22 @@ public class CMClientApp {
 				System.out.println("존재하지 않는 소설입니다. 다시 입력하세요.");
 			}
 			
-			readtext();
+			readText();
 		}
 		
-		public static void appendnovel() throws IOException {
-			/*listrequest();
-			Scanner sc = new Scanner(System.in);
-		//System.out.println("이어쓸소설이름입력: ");
-			novelname = sc.next();
-			appendtext();*/
+		public static void appendNovel() throws IOException {
 			while(true){
-				listrequest();
+				listRequest();
 				Scanner sc = new Scanner(System.in);
 				novelname = sc.next();
 				File file = new File(".\\server-file-path\\common_directory\\"+novelname+".txt");
 				if(file.isFile()) break;
 				System.out.println("존재하지 않는 소설입니다. 다시 입력하세요.");
 			}
-			appendtext();
+			appendText();
 		}
 	
-	   public static void readtext() throws IOException{ //글 읽기
+	   public static void readText() throws IOException{ //글 읽기
 		      JFrame frame = new JFrame("mycm");
 		      frame.setSize(1000,500);
 
@@ -2831,7 +2828,7 @@ public class CMClientApp {
 		   }
 		   
 		   
-		   public static void newtext(){ //글 새로 쓰기(form: 제목 내용 작성자) 
+		   public static void newText(){ //글 새로 쓰기(form: 제목 내용 작성자) 
 		      JFrame frame = new JFrame("mycm");
 		      frame.setSize(1000,500);
 
@@ -2854,7 +2851,7 @@ public class CMClientApp {
 		      savebutton.addActionListener(new ActionListener() {
 		         public void actionPerformed(ActionEvent arg0) {
 		            try {
-		               savefornew();
+		               saveForNew();
 		            } catch (IOException e) {
 		               // TODO Auto-generated catch block
 		               e.printStackTrace();
@@ -2869,7 +2866,7 @@ public class CMClientApp {
 		   
 		   
 		   @SuppressWarnings("deprecation")
-		   public static void appendtext() throws IOException{ //기존 글과 새로운 글을 합친다 (form: 내용 + 작성자)
+		   public static void appendText() throws IOException{ //기존 글과 새로운 글을 합친다 (form: 내용 + 작성자)
 		      JFrame frame = new JFrame("mycm");
 		      frame.setSize(1000,500);
 
@@ -2901,7 +2898,7 @@ public class CMClientApp {
 		      savebutton.addActionListener(new ActionListener() {
 		         public void actionPerformed(ActionEvent arg0) {
 		            try {
-		               saveforappend();
+		               saveForAppend();
 		            } catch (IOException e) {
 		               // TODO Auto-generated catch block
 		               e.printStackTrace();
@@ -2915,19 +2912,19 @@ public class CMClientApp {
 
 		   }
 		   
-		   public static void saveforappend() throws IOException{ //기존 글 + 새로 작성한 글(내용+작성자)
-		      Calendar now=Calendar.getInstance();
-		      Date date=now.getTime();
-		      text = oldtextbox.getText()+"\n"+textbox2.getText()+"\n"+date+"-----------------------------------------"+writerbox2.getText();
-		      FileWriter fw = new FileWriter(".\\server-file-path\\common_directory\\"+novelname+".txt"); //서버의 공통디렉토리에 있는 파일을 requestfile요청하고 그 받아온파일을 읽어야함
-		      fw.write(text);
-		      fw.close();
-		      m_clientStub.pushFile(".\\client-file-path\\"+novelname+".txt","SERVER"); //
+		   public static void saveForAppend() throws IOException{ //기존 글 + 새로 작성한 글(내용+작성자)
+			      Calendar now=Calendar.getInstance();
+			      Date date=now.getTime();
+			      text = oldtextbox.getText()+"\n"+textbox2.getText()+"\n"+date+"-----------------------------------------"+writerbox2.getText();
+			      FileWriter fw = new FileWriter(".\\server-file-path\\common_directory\\"+novelname+".txt"); //서버의 공통디렉토리에 있는 파일을 requestfile요청하고 그 받아온파일을 읽어야함
+			      fw.write(text);
+			      fw.close();
+			      m_clientStub.pushFile(".\\client-file-path\\"+novelname+".txt","SERVER"); //
 
-		   }
+			   }
 
 
-		   public static void savefornew() throws IOException{ //새로운 글 저장
+		   public static void saveForNew() throws IOException{ //새로운 글 저장
 		      boolean bReturn = false;
 		      String title;
 		      
