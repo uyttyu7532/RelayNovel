@@ -2771,7 +2771,7 @@ public class CMClientApp {
 	   due.setHandlerSession(myself.getCurrentSession());
 	   due.setHandlerGroup(myself.getCurrentGroup());
 	   due.setDummyInfo(strInput);
-	   m_clientStub.send(due, "CMServerApp");
+	   m_clientStub.send(due, "SERVER");
 	   due = null;
 	   
 	}
