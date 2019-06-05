@@ -1,3 +1,4 @@
+package cm;
 import java.util.Iterator;
 import java.io.*;
 import java.nio.channels.DatagramChannel;
@@ -150,8 +151,14 @@ public class CMServerEventHandler implements CMEventHandler {
 	      CMDummyEvent due = (CMDummyEvent) cme;
 	      if(due.getDummyInfo().equals("listrequest"))//dummy가 Hello이면 특정 경로에 있는 파일 이름이 묶인 string만들기
 	      {
+	    	  
+				
 	         String path = ".\\server-file-path\\common_directory";
 	         File dir = new File(path); 
+	         
+	         if (!dir.exists()) { //폴더 없으면 폴더 생성
+		            dir.mkdirs();
+		        }
 
 	         File[] fileList = dir.listFiles(); 
 	         String list="";
@@ -358,6 +365,7 @@ public class CMServerEventHandler implements CMEventHandler {
 			System.out.println("["+fe.getSenderName()+"] completes to send file("+fe.getFileName()+", "
 					+fe.getFileSize()+" Bytes).");
 			
+		
 			
 			String strFile = fe.getFileName();
 			String beforeFilePath = ".\\server-file-path\\"+fe.getSenderName()+"\\"+strFile;//가지고 올 경로와 파일이름

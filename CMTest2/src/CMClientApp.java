@@ -9,21 +9,12 @@ import java.nio.channels.SocketChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-
+import javax.swing.*;
 import kr.ac.konkuk.ccslab.cm.entity.CMGroup;
 import kr.ac.konkuk.ccslab.cm.entity.CMGroupInfo;
 import kr.ac.konkuk.ccslab.cm.entity.CMPosition;
 import kr.ac.konkuk.ccslab.cm.entity.CMServer;
 import kr.ac.konkuk.ccslab.cm.entity.CMSession;
-import kr.ac.konkuk.ccslab.cm.entity.CMSessionInfo;
 import kr.ac.konkuk.ccslab.cm.entity.CMUser;
 import kr.ac.konkuk.ccslab.cm.event.CMDummyEvent;
 import kr.ac.konkuk.ccslab.cm.event.CMEvent;
@@ -37,7 +28,7 @@ import kr.ac.konkuk.ccslab.cm.info.CMInteractionInfo;
 import kr.ac.konkuk.ccslab.cm.manager.CMConfigurator;
 import kr.ac.konkuk.ccslab.cm.manager.CMFileTransferManager;
 import kr.ac.konkuk.ccslab.cm.stub.CMClientStub;
-import kr.ac.konkuk.ccslab.cm.util.CMUtil;
+import javax.swing.JScrollPane;
 
 
 
@@ -47,39 +38,36 @@ public class CMClientApp {
 	private boolean m_bRun;
 	private Scanner m_scan = null;
 	static String novelname;
-	
-	static JFrame mainframe = new JFrame("relay_novel");
+	static String text;
+	static JTextField titlebox= new JTextField();
+	static JTextArea textbox= new JTextArea();
+	static JTextField writerbox= new JTextField();
+	static JTextArea textbox2= new JTextArea();
+	static JTextField writerbox2= new JTextField();
+	static JLabel titlelabel = new JLabel("제목");
+	static JLabel novellabel = new JLabel("내용");
+	static JLabel novellabel2 = new JLabel("추가할 내용");
+	static JLabel writerlabel = new JLabel("작성자");
+	static JLabel writerlabel2 = new JLabel("작성자");
+	static JTextArea oldtextbox= new JTextArea();
 
-	   static String text;
-	   static JTextField titlebox= new JTextField();
-	   static JTextArea textbox= new JTextArea();
-	   static JTextField writerbox= new JTextField();
-	   static JTextArea textbox2= new JTextArea();
-	   static JTextField writerbox2= new JTextField();
-	   static JLabel titlelabel = new JLabel("제목");
-	   static JLabel novellabel = new JLabel("내용");
-	   static JLabel novellabel2 = new JLabel("추가할 내용");
-	   static JLabel writerlabel = new JLabel("작성자");
-	   static JLabel writerlabel2 = new JLabel("작성자");
-	   static JTextArea oldtextbox= new JTextArea();
-	
 	public CMClientApp()
 	{
 		m_clientStub = new CMClientStub();
 		m_eventHandler = new CMClientEventHandler(m_clientStub);
 		m_bRun = true;
 	}
-	
+
 	public CMClientStub getClientStub()
 	{
 		return m_clientStub;
 	}
-	
+
 	public CMClientEventHandler getClientEventHandler()
 	{
 		return m_eventHandler;
 	}
-	
+
 	///////////////////////////////////////////////////////////////
 	// test methods
 
@@ -93,7 +81,7 @@ public class CMClientApp {
 		testLoginDS();
 		while(m_bRun)
 		{
-		
+
 			System.out.println("1:소설읽기   2:소설작성   3:종료");
 			//System.out.println("Type \"0\" for menu.");
 			System.out.print("> ");
@@ -104,14 +92,14 @@ public class CMClientApp {
 				e.printStackTrace();
 				continue;
 			}
-			
+
 			try {
 				nCommand = Integer.parseInt(strInput);
 			} catch (NumberFormatException e) {
 				System.out.println("Incorrect command number!");
 				continue;
 			}
-			
+
 			switch(nCommand)
 			{
 			case 1:
@@ -128,18 +116,17 @@ public class CMClientApp {
 				if(ans==1) {newText();}
 				//2번일 경우 이어서 작성
 				else if(ans==2) {appendNovel();}
-				
+
 			}
 			break;
-			
+
 			case 3:
 				testTerminateCM();
 				break;			
-			
+
 			}
 		}
-		
-		
+
 		try {
 			br.close();
 		} catch (IOException e) {
@@ -148,7 +135,7 @@ public class CMClientApp {
 		}
 		m_scan.close();
 	}
-	
+
 
 	public void testLoginDS()
 	{
@@ -160,7 +147,7 @@ public class CMClientApp {
 		{
 			System.err.println("Unable to obtain console.");
 		}
-		
+
 		System.out.println("====== login to default server");
 		System.out.print("user name: ");
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -177,7 +164,7 @@ public class CMClientApp {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		bRequestResult = m_clientStub.loginCM(strUserName, strPassword);
 		if(bRequestResult)
 			System.out.println("successfully sent the login request.");
@@ -185,7 +172,7 @@ public class CMClientApp {
 			System.err.println("failed the login request!");
 		System.out.println("======");
 	}
-	
+
 	public void testSyncLoginDS()
 	{
 		String strUserName = null;
@@ -196,7 +183,7 @@ public class CMClientApp {
 		{
 			System.err.println("Unable to obtain console.");
 		}
-		
+
 		System.out.println("====== login to default server");
 		System.out.print("user name: ");
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -213,7 +200,7 @@ public class CMClientApp {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		loginAckEvent = m_clientStub.syncLoginCM(strUserName, strPassword);
 		if(loginAckEvent != null)
 		{
@@ -238,7 +225,7 @@ public class CMClientApp {
 
 		System.out.println("======");		
 	}
-	
+
 	public void testLogoutDS()
 	{
 		boolean bRequestResult = false;
@@ -250,7 +237,7 @@ public class CMClientApp {
 			System.err.println("failed the logout request!");
 		System.out.println("======");
 	}
-	
+
 	public void testStartCM() throws IOException
 	{
 		// get current server info from the server configuration file
@@ -258,16 +245,16 @@ public class CMClientApp {
 		int nCurServerPort = -1;
 		String strNewServerAddress = null;
 		String strNewServerPort = null;
-		
+
 		strCurServerAddress = m_clientStub.getServerAddress();
 		nCurServerPort = m_clientStub.getServerPort();
-		
+
 		// ask the user if he/she would like to change the server info
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		System.out.println("========== start CM");
 		System.out.println("current server address: "+strCurServerAddress);
 		System.out.println("current server port: "+nCurServerPort);
-		
+
 		try {
 			System.out.print("new server address (enter for current value): ");
 			strNewServerAddress = br.readLine().trim();
@@ -279,7 +266,7 @@ public class CMClientApp {
 				m_clientStub.setServerAddress(strNewServerAddress);
 			if(!strNewServerPort.isEmpty() && Integer.parseInt(strNewServerPort) != nCurServerPort)
 				m_clientStub.setServerPort(Integer.parseInt(strNewServerPort));
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -293,13 +280,13 @@ public class CMClientApp {
 		}
 		startTest();
 	}
-	
+
 	public void testTerminateCM()
 	{
 		m_clientStub.terminateCM();
 		m_bRun = false;
 	}
-/*
+	/*
 	public void testSessionInfoDS()
 	{
 		boolean bRequestResult = false;
@@ -311,7 +298,7 @@ public class CMClientApp {
 			System.err.println("failed the session-info request!");
 		System.out.println("======");
 	}
-	
+
 	public void testSyncSessionInfoDS()
 	{
 		CMSessionEvent se = null;
@@ -339,7 +326,7 @@ public class CMClientApp {
 
 		System.out.println("======");		
 	}
-	
+
 	public void testJoinSession()
 	{
 		String strSessionName = null;
@@ -360,7 +347,7 @@ public class CMClientApp {
 			System.err.println("failed the session-join request!");
 		System.out.println("======");
 	}
-	
+
 	public void testSyncJoinSession()
 	{
 		CMSessionEvent se = null;
@@ -374,7 +361,7 @@ public class CMClientApp {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		se = m_clientStub.syncJoinSession(strSessionName);
 		if(se != null)
 		{
@@ -384,10 +371,10 @@ public class CMClientApp {
 		{
 			System.err.println("failed the session-join request!");
 		}
-		
+
 		System.out.println("======");		
 	}
-	
+
 	public void testLeaveSession()
 	{
 		boolean bRequestResult = false;
@@ -399,7 +386,7 @@ public class CMClientApp {
 			System.err.println("failed the leave-session request!");
 		System.out.println("======");
 	}
-	*/
+	 */
 	public void testUserPosition()
 	{
 		CMPosition position = new CMPosition();
@@ -436,50 +423,23 @@ public class CMClientApp {
 		position.m_q.m_y = Float.parseFloat(strTokens[2]);
 		position.m_q.m_z = Float.parseFloat(strTokens[3]);
 		System.out.println("Quat input: ("+position.m_q.m_w+", "+position.m_q.m_x+", "+position.m_q.m_y+", "+position.m_q.m_z+")");
-		
+
 		m_clientStub.sendUserPosition(position);
-		
+
 		System.out.println("======");
 	}
-	/*
-	public void testChat()
-	{
-		String strTarget = null;
-		String strMessage = null;
-		System.out.println("====== chat");
-		System.out.print("target(/b, /s, /g, or /username): ");
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		try {
-			strTarget = br.readLine();
-			strTarget = strTarget.trim();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.print("message: ");
-		try {
-			strMessage = br.readLine();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		m_clientStub.chat(strTarget, strMessage);
-		
-		System.out.println("======");
-	}
-*/
+
 	public void testDummyEvent()
 	{
 		CMInteractionInfo interInfo = m_clientStub.getCMInfo().getInteractionInfo();
 		CMUser myself = interInfo.getMyself();
-		
+
 		if(myself.getState() != CMInfo.CM_SESSION_JOIN)
 		{
 			System.out.println("You should join a session and a group!");
 			return;
 		}
-		
+
 		System.out.println("====== test CMDummyEvent in current group");
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		System.out.print("input message: ");
@@ -490,90 +450,17 @@ public class CMClientApp {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		CMDummyEvent due = new CMDummyEvent();
 		due.setHandlerSession(myself.getCurrentSession());
 		due.setHandlerGroup(myself.getCurrentGroup());
 		due.setDummyInfo(strInput);
 		m_clientStub.cast(due, myself.getCurrentSession(), myself.getCurrentGroup());
 		due = null;
-		
+
 		System.out.println("======");
 	}
-	/*
-	public void testDatagram()
-	{
-		CMInteractionInfo interInfo = m_clientStub.getCMInfo().getInteractionInfo();
-		CMConfigurationInfo confInfo = m_clientStub.getCMInfo().getConfigurationInfo();
-		CMUser myself = interInfo.getMyself();
 
-		if(myself.getState() != CMInfo.CM_SESSION_JOIN)
-		{
-			System.out.println("You should join a session and a group!");
-			return;
-		}
-		
-		String strReceiver = null;
-		String strMessage = null;
-		String strSendPort = null;
-		String strRecvPort = null;
-		int nSendPort = 0;
-		int nRecvPort = 0;
-		System.out.println("====== test unicast chatting with non-blocking datagram channels");
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		try {
-			System.out.print("receiver: ");
-			strReceiver = br.readLine();
-			System.out.print("message: ");
-			strMessage = br.readLine();
-			System.out.print("sender port(enter for default port): ");
-			strSendPort = br.readLine();
-			System.out.print("receiver port(enter for default port): ");
-			strRecvPort = br.readLine();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		try {
-			if(strSendPort.isEmpty())
-				nSendPort = confInfo.getUDPPort();
-			else
-				nSendPort = Integer.parseInt(strSendPort);
-		}catch(NumberFormatException ne) {
-			ne.printStackTrace();
-			nSendPort = confInfo.getUDPPort();
-		}
-			
-		try {
-			if(strRecvPort.isEmpty())
-				nRecvPort = 0;
-			else
-				nRecvPort = Integer.parseInt(strRecvPort);			
-		}catch(NumberFormatException ne)
-		{
-			ne.printStackTrace();
-			nRecvPort = 0;
-		}
-		
-		
-		CMInterestEvent ie = new CMInterestEvent();
-		ie.setID(CMInterestEvent.USER_TALK);
-		ie.setHandlerSession(myself.getCurrentSession());
-		ie.setHandlerGroup(myself.getCurrentGroup());
-		ie.setUserName(myself.getName());
-		ie.setTalk(strMessage);
-		
-		if(nRecvPort == 0)
-			m_clientStub.send(ie, strReceiver, CMInfo.CM_DATAGRAM, nSendPort);
-		else
-			m_clientStub.send(ie, strReceiver, CMInfo.CM_DATAGRAM, nSendPort, nRecvPort, false);
-		ie = null;
-		
-		System.out.println("======");
-		return;
-	}
-	*/
 	public void testUserEvent()
 	{
 		String strInput = null;
@@ -582,18 +469,18 @@ public class CMClientApp {
 		String[] strTokens = null;
 		int nValueByteNum = -1;
 		CMUser myself = m_clientStub.getCMInfo().getInteractionInfo().getMyself();
-		
+
 		if(myself.getState() != CMInfo.CM_SESSION_JOIN)
 		{
 			System.out.println("You should join a session and a group!");
 			return;
 		}
-		
+
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		System.out.println("====== test CMUserEvent");
 		System.out.println("data type: CM_INT(0) CM_LONG(1) CM_FLOAT(2) CM_DOUBLE(3) CM_CHAR(4) CM_STR(5) CM_BYTES(6)");
 		System.out.println("Type \"end\" to stop.");
-		
+
 		CMUserEvent ue = new CMUserEvent();
 		ue.setStringID("testID");
 		ue.setHandlerSession(myself.getCurrentSession());
@@ -612,7 +499,7 @@ public class CMClientApp {
 				ue = null;
 				return;
 			}
-			
+
 			if(strInput.equals("end"))
 			{
 				bEnd = true;
@@ -641,7 +528,7 @@ public class CMClientApp {
 					ue.setEventField(Integer.parseInt(strTokens[0]), strTokens[1], strTokens[2]);
 			}
 		}
-		
+
 		System.out.print("receiver: ");
 		try {
 			strReceiver = br.readLine();
@@ -649,32 +536,32 @@ public class CMClientApp {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		m_clientStub.send(ue, strReceiver);
 
 		System.out.println("======");
-		
+
 		ue.removeAllEventFields();
 		ue = null;
 		return;
 	}
-	
+
 	// test sendrecv
 	public void testSendRecv()
 	{
 		CMUserEvent ue = new CMUserEvent();
 		CMUserEvent rue = null;
 		String strTargetName = null;
-		
+
 		// a user event: (id, 111) (string id, "testSendRecv")
 		// a reply user event: (id, 222) (string id, "testReplySendRecv")
-		
+
 		System.out.println("====== test sendrecv");
-		
+
 		// create a user event
 		ue.setID(111);
 		ue.setStringID("testSendRecv");
-		
+
 		// get target name
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		System.out.println("user event to be sent: (id, 111), (string id, \"testSendRecv\")");
@@ -688,10 +575,10 @@ public class CMClientApp {
 			e.printStackTrace();
 			return;
 		}
-		
+
 		if(strTargetName.isEmpty())
 			strTargetName = "SERVER";
-		
+
 		long lStartTime = System.currentTimeMillis();
 		rue = (CMUserEvent) m_clientStub.sendrecv(ue, strTargetName, CMInfo.CM_USER_EVENT, 222, 10000);
 		long lServerResponseDelay = System.currentTimeMillis() - lStartTime;
@@ -704,10 +591,10 @@ public class CMClientApp {
 					"), (id, "+rue.getID()+"), (string id, "+rue.getStringID()+")");
 			System.out.println("Server response delay: "+lServerResponseDelay+"ms.");
 		}
-		
+
 		System.out.println("======");
 	}
-	
+
 	// test castrecv
 	public void testCastRecv()
 	{
@@ -721,17 +608,17 @@ public class CMClientApp {
 
 		// a user event: (id, 112) (string id, "testCastRecv")
 		// a reply user event: (id, 223) (string id, "testReplyCastRecv")
-		
+
 		System.out.println("====== test castrecv");
 		// set a user event
 		ue.setID(112);
 		ue.setStringID("testCastRecv");
-		
+
 		// set event target session and group
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		System.out.println("user event to be sent: (id, 112), (string id, \"testCastRecv\")");
 		System.out.println("reply event to be received: (id, 223), (string id, \"testReplyCastRecv\")");
-		
+
 		try {
 			System.out.print("Target session(empty for null): ");
 			strTargetSession = br.readLine().trim();
@@ -744,7 +631,7 @@ public class CMClientApp {
 			e.printStackTrace();
 			return;
 		}
-		
+
 		if(strTargetSession.isEmpty())
 			strTargetSession = null;
 		if(strTargetGroup.isEmpty())
@@ -759,7 +646,7 @@ public class CMClientApp {
 			System.err.println("Wrong number format!");
 			return;
 		}
-		
+
 		System.out.println("Target session: "+strTargetSession);
 		System.out.println("Target group: "+strTargetGroup);
 		System.out.println("Minimum number of reply events: "+nMinNumReplyEvents);
@@ -775,7 +662,7 @@ public class CMClientApp {
 			System.err.println("Error in castrecv()!");
 			return;
 		}
-		
+
 		System.out.println("Number of received reply events: "+rueArray.length);
 		System.out.print("Reply from: ");
 		for(int i = 0; i < rueArray.length; i++)
@@ -785,23 +672,23 @@ public class CMClientApp {
 		System.out.println("======");
 
 	}
-	
+
 	// test asynchronous sendrecv
 	public void testAsyncSendRecv()
 	{
 		CMUserEvent ue = new CMUserEvent();
 		boolean bRet = false;
 		String strTargetName = null;
-		
+
 		// a user event: (id, 111) (string id, "testSendRecv")
 		// a reply user event: (id, 222) (string id, "testReplySendRecv")
-		
+
 		System.out.println("====== test asynchronous sendrecv");
-		
+
 		// create a user event
 		ue.setID(111);
 		ue.setStringID("testSendRecv");
-		
+
 		// get target name
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		System.out.println("user event to be sent: (id, 111), (string id, \"testSendRecv\")");
@@ -815,7 +702,7 @@ public class CMClientApp {
 			e.printStackTrace();
 			return;
 		}
-		
+
 		if(strTargetName.isEmpty())
 			strTargetName = "SERVER";
 
@@ -824,10 +711,10 @@ public class CMClientApp {
 
 		if(!bRet)
 			System.err.println("Error in asynchronous sendrecv service!");
-		
+
 		System.out.println("======");
 	}
-	
+
 	// test asynchronous castrecv
 	public void testAsyncCastRecv()
 	{
@@ -840,17 +727,17 @@ public class CMClientApp {
 
 		// a user event: (id, 112) (string id, "testCastRecv")
 		// a reply user event: (id, 223) (string id, "testReplyCastRecv")
-		
+
 		System.out.println("====== test asynchronous castrecv");
 		// set a user event
 		ue.setID(112);
 		ue.setStringID("testCastRecv");
-		
+
 		// set event target session and group
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		System.out.println("user event to be sent: (id, 112), (string id, \"testCastRecv\")");
 		System.out.println("reply event to be received: (id, 223), (string id, \"testReplyCastRecv\")");
-		
+
 		try {
 			System.out.print("Target session(empty for null): ");
 			strTargetSession = br.readLine().trim();
@@ -863,7 +750,7 @@ public class CMClientApp {
 			e.printStackTrace();
 			return;
 		}
-		
+
 		if(strTargetSession.isEmpty())
 			strTargetSession = null;
 		if(strTargetGroup.isEmpty())
@@ -878,7 +765,7 @@ public class CMClientApp {
 			System.err.println("Wrong number format!");
 			return;
 		}
-		
+
 		System.out.println("Target session: "+strTargetSession);
 		System.out.println("Target group: "+strTargetGroup);
 		System.out.println("Minimum number of reply events: "+nMinNumReplyEvents);
@@ -887,29 +774,29 @@ public class CMClientApp {
 		m_eventHandler.setMinNumWaitedEvents(nMinNumReplyEvents);
 		m_eventHandler.setRecvReplyEvents(0);
 		bRet = m_clientStub.cast(ue, strTargetSession, strTargetGroup);
-		
+
 		if(!bRet)
 		{
 			System.err.println("Error in asynchronous castrecv service!");
 			return;
 		}
 		System.out.println("======");
-		
+
 	}
-	
+
 	// print group information provided by the default server
 	public void testPrintGroupInfo()
 	{
 		// check local state
 		CMInteractionInfo interInfo = m_clientStub.getCMInfo().getInteractionInfo();
 		CMUser myself = interInfo.getMyself();
-		
+
 		if(myself.getState() != CMInfo.CM_SESSION_JOIN)
 		{
 			System.out.println("You should join a session and a group.");
 			return;
 		}
-		
+
 		CMSession session = interInfo.findSession(myself.getCurrentSession());
 		Iterator<CMGroup> iter = session.getGroupList().iterator();
 		System.out.println("---------------------------------------------------------");
@@ -921,10 +808,10 @@ public class CMClientApp {
 			System.out.format("%-20s%-20s%-20d%n", gInfo.getGroupName(), gInfo.getGroupAddress()
 					, gInfo.getGroupPort());
 		}
-		
+
 		return;
 	}
-	
+
 	public void testCurrentUserStatus()
 	{
 		CMInteractionInfo interInfo = m_clientStub.getCMInfo().getInteractionInfo();
@@ -934,7 +821,7 @@ public class CMClientApp {
 		System.out.println("name("+myself.getName()+"), session("+myself.getCurrentSession()+"), group("
 				+myself.getCurrentGroup()+"), udp port("+myself.getUDPPort()+"), state("
 				+myself.getState()+"), attachment download scheme("+confInfo.getAttachDownloadScheme()+").");
-		
+
 		// for additional servers
 		Iterator<CMServer> iter = interInfo.getAddServerList().iterator();
 		while(iter.hasNext())
@@ -946,13 +833,13 @@ public class CMClientApp {
 				System.out.println("current session("+tserver.getCurrentSessionName()+
 						"), current group("+tserver.getCurrentGroupName()+"), state("
 						+tserver.getClientState()+").");
-				
+
 			}
 		}
-		
+
 		return;
 	}
-	
+
 	public void testChangeGroup()
 	{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -966,11 +853,11 @@ public class CMClientApp {
 			e.printStackTrace();
 		}
 		m_clientStub.changeGroup(strGroupName);
-		
+
 		System.out.println("======");
 		return;
 	}
-	
+
 	// ServerSocketChannel is not supported.
 	// A server cannot add SocketChannel.
 	// For the SocketChannel, available server name must be given as well.
@@ -993,7 +880,7 @@ public class CMClientApp {
 		DatagramChannel dc = null;
 		String strSync = null;
 		boolean isSyncCall = false;
-		
+
 		if(confInfo.getSystemType().equals("CLIENT"))
 		{
 			CMUser myself = interInfo.getMyself();
@@ -1003,7 +890,7 @@ public class CMClientApp {
 				return;
 			}
 		}
-		
+
 		System.out.println("====== add additional channel");
 
 		// ask channel type, (server name), channel index (integer greater than 0), addr, port
@@ -1021,7 +908,7 @@ public class CMClientApp {
 					System.err.println("invalid answer! : "+strBlock);
 					return;
 				}
-			
+
 				if(isBlock)
 				{
 					System.out.print("Channel key(>=0): ");
@@ -1042,7 +929,7 @@ public class CMClientApp {
 						return;
 					}
 				}
-				
+
 				System.out.print("Is the addition synchronous? (\"y\": yes, \"n\": no): ");
 				strSync = m_scan.next();
 				if(strSync.equals("y")) isSyncCall = true;
@@ -1052,7 +939,7 @@ public class CMClientApp {
 					System.err.println("invalid answer! :" + strSync);
 					return;
 				}
-				
+
 				System.out.print("Server name(\"SERVER\" for the default server): ");
 				strServerName = m_scan.next();
 			}
@@ -1067,7 +954,7 @@ public class CMClientApp {
 					System.err.println("invalid answer! : "+strBlock);
 					return;
 				}
-			
+
 				if(isBlock)
 				{
 					System.out.print("Channel udp port: ");
@@ -1106,7 +993,7 @@ public class CMClientApp {
 			m_scan.next();
 			return;
 		}
-					
+
 		switch(nChType)
 		{
 		case CMInfo.CM_SOCKET_CHANNEL:
@@ -1133,7 +1020,7 @@ public class CMClientApp {
 						System.err.println("Failed to add a blocking socket channel at the client or "
 								+"failed to request to add the channel info to the server: key("+nChKey
 								+"), server("+strServerName+")");
-					
+
 				}
 			}
 			else
@@ -1161,7 +1048,7 @@ public class CMClientApp {
 								+"), server("+strServerName+")");					
 				}
 			}
-				
+
 			break;
 		case CMInfo.CM_DATAGRAM_CHANNEL:
 			if(isBlock)
@@ -1180,7 +1067,7 @@ public class CMClientApp {
 				else
 					System.err.println("Failed to add a non-blocking datagram socket channel: port("+nChPort+")");				
 			}
-			
+
 			break;
 		case CMInfo.CM_MULTICAST_CHANNEL:
 			bResult = m_clientStub.addMulticastChannel(strSessionName, strGroupName, strChAddress, nChPort);
@@ -1199,10 +1086,10 @@ public class CMClientApp {
 			System.out.println("Channel type is incorrect!");
 			break;
 		}
-		
+
 		System.out.println("======");
 	}
-	
+
 	public void testRemoveChannel()
 	{
 		int nChType = -1;
@@ -1219,7 +1106,7 @@ public class CMClientApp {
 		boolean isBlock = false;
 		String strSync = null;
 		boolean isSyncCall = false;
-		
+
 		if(confInfo.getSystemType().equals("CLIENT"))
 		{
 			CMUser myself = interInfo.getMyself();
@@ -1229,7 +1116,7 @@ public class CMClientApp {
 				return;
 			}
 		}
-		
+
 		System.out.println("====== remove additional channel");
 		try{
 			System.out.print("Select channel type (SocketChannel:2, DatagramChannel:3, MulticastChannel:4): ");
@@ -1245,7 +1132,7 @@ public class CMClientApp {
 					System.err.println("invalid answer! : "+strBlock);
 					return;
 				}
-			
+
 				if(isBlock)
 				{
 					System.out.print("Channel key(>=0): ");
@@ -1347,7 +1234,7 @@ public class CMClientApp {
 					System.err.println("Failed to remove a nonblocing socket channel: key("+nChKey
 							+"), server("+strServerName+")");
 			}
-			
+
 			break;
 		case CMInfo.CM_DATAGRAM_CHANNEL:
 			if(isBlock)
@@ -1385,10 +1272,10 @@ public class CMClientApp {
 			System.out.println("Channel type is incorrect!");
 			break;
 		}
-		
+
 		System.out.println("======");
 	}
-	
+
 	public void testSetFilePath()
 	{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -1401,12 +1288,12 @@ public class CMClientApp {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		m_clientStub.setTransferedFileHome(Paths.get(strPath));
-		
+
 		System.out.println("======");
 	}
-	
+
 	public void testRequestFile()
 	{
 		boolean bReturn = false;
@@ -1424,12 +1311,12 @@ public class CMClientApp {
 				strFileOwner = "SERVER";
 			System.out.print("File append mode('y'(append);'n'(overwrite);''(empty for the default configuration): ");
 			strFileAppend = br.readLine();
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		if(strFileAppend.isEmpty())
 			bReturn = m_clientStub.requestFile(strFileName, strFileOwner);
 		else if(strFileAppend.equals("y"))
@@ -1438,13 +1325,13 @@ public class CMClientApp {
 			bReturn = m_clientStub.requestFile(strFileName,  strFileOwner, CMInfo.FILE_OVERWRITE);
 		else
 			System.err.println("wrong input for the file append mode!");
-		
+
 		if(!bReturn)
 			System.err.println("Request file error! file("+strFileName+"), owner("+strFileOwner+").");
-		
+
 		System.out.println("======");
 	}
-	
+
 	public void testPushFile()
 	{
 		String strFilePath = null;
@@ -1452,7 +1339,7 @@ public class CMClientApp {
 		boolean bReturn = false;
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		System.out.println("====== push a file");
-		
+
 		try {
 			System.out.print("File path name: ");
 			strFilePath = br.readLine();
@@ -1464,22 +1351,22 @@ public class CMClientApp {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		bReturn = m_clientStub.pushFile(strFilePath, strReceiver);
-		
+
 		if(!bReturn)
 			System.err.println("Push file error! file("+strFilePath+"), receiver("+strReceiver+")");
-		
+
 		System.out.println("======");
 	}
-	
+
 	public void cancelRecvFile()
 	{
 		String strSender = null;
 		boolean bReturn = false;
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		System.out.println("====== cancel receiving a file");
-		
+
 		System.out.print("Input sender name (enter for all senders): ");
 		try {
 			strSender = br.readLine();
@@ -1491,7 +1378,7 @@ public class CMClientApp {
 		}
 
 		bReturn = m_clientStub.cancelRequestFile(strSender);
-		
+
 		if(bReturn)
 		{
 			if(strSender == null)
@@ -1500,10 +1387,10 @@ public class CMClientApp {
 		}
 		else
 			System.err.println("Request failed to cancel receiving a file to ["+strSender+"]!");
-		
+
 		return;
 	}
-	
+
 	public void cancelSendFile()
 	{
 		String strReceiver = null;
@@ -1511,7 +1398,7 @@ public class CMClientApp {
 		System.out.println("====== cancel sending a file");
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		System.out.print("Input receiver name (enter for all receivers): ");
-		
+
 		try {
 			strReceiver = br.readLine();
 			if(strReceiver.isEmpty())
@@ -1520,9 +1407,9 @@ public class CMClientApp {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		bReturn = m_clientStub.cancelPushFile(strReceiver);
-		
+
 		if(bReturn)
 		{
 			if(strReceiver == null)
@@ -1531,10 +1418,10 @@ public class CMClientApp {
 		}
 		else
 			System.err.println("Request failed to cancel sending a file to ["+strReceiver+"]!");
-		
+
 		return;
 	}
-	
+
 	public void testForwarding()
 	{
 		int nForwardType = 0;
@@ -1545,16 +1432,16 @@ public class CMClientApp {
 		int nEventID = -1;
 		String strUserName = null;
 		CMUserEvent ue = null;
-		
+
 		int nUserState = m_clientStub.getCMInfo().getInteractionInfo().getMyself().getState();
 		if(nUserState != CMInfo.CM_LOGIN && nUserState != CMInfo.CM_SESSION_JOIN)
 		{
 			System.out.println("You must log in to the default server.");
 			return;
 		}
-		
+
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		
+
 		System.out.println("====== typical/internal forwarding test");
 		try {
 			System.out.print("Forwarding type (0: typical, 1: internal): ");
@@ -1572,12 +1459,12 @@ public class CMClientApp {
 			e.printStackTrace();
 			return;
 		}
-		
+
 		nEventRange = (int) (nEventTypeNum * fForwardRate); // number of event types which must be forwarded
 		strUserName = m_clientStub.getCMInfo().getInteractionInfo().getMyself().getName();
 		Random rnd = new Random();
 		ue = new CMUserEvent();
-		
+
 		for(int i = 0; i < nSimNum; i++)
 		{
 			for(int j = 0; j < 100; j++)
@@ -1591,7 +1478,7 @@ public class CMClientApp {
 				ue.setEventField(CMInfo.CM_INT, "id", String.valueOf(nEventID));
 				ue.setEventField(CMInfo.CM_INT, "ftype", String.valueOf(nForwardType));
 				ue.setEventField(CMInfo.CM_STR, "user", strUserName);
-				
+
 				// send the event to a server
 				if(nForwardType == 0)
 					m_clientStub.send(ue, "SERVER");
@@ -1609,17 +1496,17 @@ public class CMClientApp {
 				}
 			}
 		}
-		
+
 		// send an end event to a server (id: EndSim, int: simnum)
 		ue = new CMUserEvent();
 		ue.setStringID("EndSim");
 		ue.setEventField(CMInfo.CM_INT, "simnum", String.valueOf(nSimNum));
 		m_clientStub.send(ue, "SERVER");
-		
+
 		ue = null;
 		return;
 	}
-	
+
 	public void testForwardingDelay()
 	{
 		int nForwardType = 0;
@@ -1656,14 +1543,14 @@ public class CMClientApp {
 
 		for(int i=0; i < nSendNum; i++)
 		{
-			
+
 			// generate a test event
 			ue = new CMUserEvent();
 			ue.setStringID("testForwardDelay");
 			ue.setEventField(CMInfo.CM_INT, "id", String.valueOf(i));
 			ue.setEventField(CMInfo.CM_INT, "ftype", String.valueOf(nForwardType));
 			ue.setEventField(CMInfo.CM_STR, "user", strUserName);
-				
+
 			lSendTime = System.currentTimeMillis();
 			ue.setEventField(CMInfo.CM_LONG, "stime", String.valueOf(lSendTime));
 
@@ -1680,25 +1567,25 @@ public class CMClientApp {
 				return;
 			}
 		}
-		
+
 		// send end event to a server (id: EndSim, int: simnum)
 		ue = new CMUserEvent();
 		ue.setStringID("EndForwardDelay");
 		ue.setEventField(CMInfo.CM_INT, "ftype", String.valueOf(nForwardType));
 		ue.setEventField(CMInfo.CM_STR, "user", strUserName);
 		ue.setEventField(CMInfo.CM_INT, "sendnum", String.valueOf(nSendNum));
-		
+
 		if(nForwardType == 0)
 			m_clientStub.send(ue, "SERVER");
 		else
 			m_clientStub.send(ue, strUserName);
-		
+
 		System.out.println("======");
-		
+
 		ue = null;
 		return;
 	}
-	
+
 	public void testDownloadNewSNSContent()
 	{
 		System.out.println("====== request downloading of SNS content (offset 0)");
@@ -1707,7 +1594,7 @@ public class CMClientApp {
 		String strInput = null;
 		int nContentOffset = 0;
 		String strUserName = m_clientStub.getCMInfo().getInteractionInfo().getMyself().getName();
-		
+
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		try {
 			System.out.print("Input offset(>= 0, Enter for 0): ");
@@ -1727,7 +1614,7 @@ public class CMClientApp {
 			e.printStackTrace();
 			return;
 		}
-		
+
 		// start time of downloading contents
 		m_eventHandler.setStartTime(System.currentTimeMillis());
 
@@ -1741,20 +1628,20 @@ public class CMClientApp {
 		System.out.println("======");
 		return;
 	}
-	
+
 	public void testRequestAttachedFileOfSNSContent()
 	{
 		System.out.println("===== Request an attached file of SNS content");
-//		int nContentID = 0;
-//		String strWriterName = null;
+		//		int nContentID = 0;
+		//		String strWriterName = null;
 		String strFileName = null;
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
 		try {
-//			System.out.print("SNS content ID: ");
-//			nContentID = Integer.parseInt(br.readLine());
-//			System.out.print("Writer name: ");
-//			strWriterName = br.readLine();
+			//			System.out.print("SNS content ID: ");
+			//			nContentID = Integer.parseInt(br.readLine());
+			//			System.out.print("Writer name: ");
+			//			strWriterName = br.readLine();
 			System.out.print("Attached file name: ");
 			strFileName = br.readLine();
 		} catch (NumberFormatException e) {
@@ -1766,12 +1653,12 @@ public class CMClientApp {
 			e.printStackTrace();
 			return;
 		}
-		
-//		m_clientStub.requestAttachedFileOfSNSContent(nContentID, strWriterName, strFileName);
+
+		//		m_clientStub.requestAttachedFileOfSNSContent(nContentID, strWriterName, strFileName);
 		m_clientStub.requestAttachedFileOfSNSContent(strFileName);
 		return;
 	}
-	
+
 	public void testRepeatedSNSContentDownload()
 	{
 		System.out.println("====== Repeated downloading of SNS content");
@@ -1793,7 +1680,7 @@ public class CMClientApp {
 
 		return;
 	}
-	
+
 	// download the next SNS content list
 	// if this method is called without any previous download request, it requests the most recent list
 	public void testDownloadNextSNSContent()
@@ -1802,7 +1689,7 @@ public class CMClientApp {
 		// start time of downloading contents
 		m_eventHandler.setStartTime(System.currentTimeMillis());
 		m_clientStub.requestNextSNSContent();
-		
+
 		return;
 	}
 
@@ -1814,10 +1701,10 @@ public class CMClientApp {
 		// start time of downloading contents
 		m_eventHandler.setStartTime(System.currentTimeMillis());
 		m_clientStub.requestPreviousSNSContent();
-		
+
 		return;
 	}
-	
+
 	public void testSNSContentUpload()
 	{
 		String strMessage = null;
@@ -1855,14 +1742,14 @@ public class CMClientApp {
 			e.printStackTrace();
 			return;
 		}
-		
+
 		String strUser = m_clientStub.getCMInfo().getInteractionInfo().getMyself().getName();
 		m_clientStub.requestSNSContentUpload(strUser, strMessage, nNumAttachedFiles, nReplyOf, nLevelOfDisclosure, 
 				filePathList);
 
 		return;
 	}
-	
+
 	public void testRegisterUser()
 	{
 		String strName = null;
@@ -1892,7 +1779,7 @@ public class CMClientApp {
 				strPasswd = new String(console.readPassword("Input password: "));
 				strRePasswd = new String(console.readPassword("Retype password: "));
 			}
-			
+
 			if(!strPasswd.equals(strRePasswd))
 			{
 				System.err.println("Password input error");
@@ -1908,7 +1795,7 @@ public class CMClientApp {
 		System.out.println("======");
 		return;
 	}
-	
+
 	public void testDeregisterUser()
 	{
 		String strName = null;
@@ -1938,12 +1825,12 @@ public class CMClientApp {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		m_clientStub.deregisterUser(strName, strPasswd);
 		System.out.println("======");
 		return;
 	}
-	
+
 	public void testFindRegisteredUser()
 	{
 		String strName = null;
@@ -1960,7 +1847,7 @@ public class CMClientApp {
 		System.out.println("======");
 		return;
 	}
-	
+
 	public void testAddNewFriend()
 	{
 		String strFriendName = null;
@@ -1975,11 +1862,11 @@ public class CMClientApp {
 			e.printStackTrace();
 			return;
 		}
-		
+
 		m_clientStub.addNewFriend(strFriendName);
 		return;
 	}
-	
+
 	public void testRemoveFriend()
 	{
 		String strFriendName = null;
@@ -1993,38 +1880,38 @@ public class CMClientApp {
 			e.printStackTrace();
 			return;
 		}
-		
+
 		m_clientStub.removeFriend(strFriendName);
 		return;
 	}
-	
+
 	public void testRequestFriendsList()
 	{
 		System.out.println("====== request current friends list");
 		m_clientStub.requestFriendsList();
 		return;
 	}
-	
+
 	public void testRequestFriendRequestersList()
 	{
 		System.out.println("====== request friend requesters list");
 		m_clientStub.requestFriendRequestersList();
 		return;
 	}
-	
+
 	public void testRequestBiFriendsList()
 	{
 		System.out.println("====== request bi-directional friends list");
 		m_clientStub.requestBiFriendsList();
 		return;
 	}
-	
+
 	public void testRequestServerInfo()
 	{
 		System.out.println("====== request additional server information");
 		m_clientStub.requestServerInfo();
 	}
-	
+
 	public void testConnectToServer()
 	{
 		System.out.println("====== connect to a designated server");
@@ -2037,11 +1924,11 @@ public class CMClientApp {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		m_clientStub.connectToServer(strServerName);
 		return;
 	}
-	
+
 	public void testDisconnectFromServer()
 	{
 		System.out.println("===== disconnect from a designated server");
@@ -2058,7 +1945,7 @@ public class CMClientApp {
 		m_clientStub.disconnectFromServer(strServerName);
 		return;
 	}
-	
+
 	public void testLoginServer()
 	{
 		String strServerName = null;
@@ -2089,7 +1976,7 @@ public class CMClientApp {
 				{
 					password = new String(console.readPassword("Password: "));
 				}
-				
+
 				m_clientStub.loginCM(user, password);
 			}
 			else // use the login info for the default server
@@ -2103,11 +1990,11 @@ public class CMClientApp {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		System.out.println("======");
 		return;
 	}
-	
+
 	public void testLogoutServer()
 	{
 		String strServerName = null;
@@ -2120,11 +2007,11 @@ public class CMClientApp {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		m_clientStub.logoutCM(strServerName);
 		System.out.println("======");
 	}
-	
+
 	public void testRequestSessionInfoOfServer()
 	{
 		String strServerName = null;
@@ -2141,7 +2028,7 @@ public class CMClientApp {
 		System.out.println("======");
 		return;
 	}
-	
+
 	public void testJoinSessionOfServer()
 	{
 		String strServerName = null;
@@ -2161,7 +2048,7 @@ public class CMClientApp {
 		System.out.println("======");
 		return;
 	}
-	
+
 	public void testLeaveSessionOfServer()
 	{
 		String strServerName = null;
@@ -2178,12 +2065,12 @@ public class CMClientApp {
 		System.out.println("======");
 		return;
 	}
-	
+
 	public void testPrintGroupInfoOfServer()
 	{
 		CMInteractionInfo interInfo = m_clientStub.getCMInfo().getInteractionInfo();
 		CMUser myself = interInfo.getMyself();
-		
+
 		String strServerName = null;
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		System.out.println("====== print group information a designated server");
@@ -2194,20 +2081,20 @@ public class CMClientApp {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		if(strServerName.equals("SERVER"))
 		{
 			testPrintGroupInfo();
 			return;
 		}
-		
+
 		CMServer server = interInfo.findAddServer(strServerName);
 		if(server == null)
 		{
 			System.out.println("server("+strServerName+") not found in the add-server list!");
 			return;
 		}
-		
+
 		CMSession session = server.findSession(myself.getCurrentSession());
 		Iterator<CMGroup> iter = session.getGroupList().iterator();
 		System.out.println("---------------------------------------------------------");
@@ -2222,7 +2109,7 @@ public class CMClientApp {
 
 		return;
 	}
-	
+
 	public void testSendMultipleFiles()
 	{
 		String[] strFiles = null;
@@ -2255,7 +2142,7 @@ public class CMClientApp {
 			nFileNum = Integer.parseInt(br.readLine());
 			System.out.print("Input file names separated with space: ");
 			strFileList = br.readLine();
-			
+
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -2265,7 +2152,7 @@ public class CMClientApp {
 			e.printStackTrace();
 			return;
 		}
-		
+
 		strFileList.trim();
 		strFiles = strFileList.split("\\s+");
 		if(strFiles.length != nFileNum)
@@ -2273,7 +2160,7 @@ public class CMClientApp {
 			System.out.println("The number of files incorrect!");
 			return;
 		}
-		
+
 		for(int i = 0; i < nFileNum; i++)
 		{
 			switch(nMode)
@@ -2286,10 +2173,10 @@ public class CMClientApp {
 				break;
 			}
 		}
-		
+
 		return;
 	}
-	
+
 	public void testSplitFile()
 	{
 		String strSrcFile = null;
@@ -2301,7 +2188,7 @@ public class CMClientApp {
 		int nSplitNum = -1;
 		RandomAccessFile raf = null;
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		
+
 		System.out.println("====== split a file");
 		try {
 			System.out.print("Input source file name: ");
@@ -2313,23 +2200,23 @@ public class CMClientApp {
 
 			lSplitSize = lFileSize / nSplitNum;
 			lSplitRemainder = lFileSize % lSplitSize;
-			
+
 			for(int i = 0; i < nSplitNum; i++)
 			{
 				// get the name of split file ('srcfile'-i.split)
 				int index = strSrcFile.lastIndexOf(".");
 				strSplitFile = strSrcFile.substring(0, index)+"-"+(i+1)+".split";
-				
+
 				// update offset
 				lFileOffset = i*lSplitSize;
-				
+
 				if(i+1 != nSplitNum)
 					CMFileTransferManager.splitFile(raf, lFileOffset, lSplitSize, strSplitFile);
 				else
 					CMFileTransferManager.splitFile(raf, lFileOffset, lSplitSize+lSplitRemainder, strSplitFile);
-				
+
 			}
-			
+
 			raf.close();
 		} catch (FileNotFoundException fe) {
 			fe.printStackTrace();
@@ -2342,7 +2229,7 @@ public class CMClientApp {
 
 		return;
 	}
-	
+
 	public void testMergeFiles()
 	{
 		String[] strFiles = null;
@@ -2352,7 +2239,7 @@ public class CMClientApp {
 		int nFileNum = -1;
 		long lMergeFileSize = -1;
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		
+
 		System.out.println("====== merge split files");
 		try {
 			System.out.print("Number of split files: ");
@@ -2372,7 +2259,7 @@ public class CMClientApp {
 			e.printStackTrace();
 			return;
 		}
-		
+
 		/*
 		strFileList.trim();
 		strFiles = strFileList.split("\\s+");
@@ -2381,21 +2268,21 @@ public class CMClientApp {
 			System.out.println("Wrong number of input files!");
 			return;
 		}
-		*/
-		
+		 */
+
 		// make list of split file names
 		strFiles = new String[nFileNum];
 		for(int i = 0; i < nFileNum; i++)
 		{
 			strFiles[i] = strFilePrefix + "-" + (i+1) + ".split";
 		}
-		
+
 		lMergeFileSize = CMFileTransferManager.mergeFiles(strFiles, nFileNum, strMergeFileName);
 		System.out.println("Size of merged file("+strMergeFileName+"): "+lMergeFileSize+" Bytes.");
 		return;
 	}
-	
-	
+
+
 	public void testDistFileProc()
 	{
 		CMInteractionInfo interInfo = m_clientStub.getCMInfo().getInteractionInfo();
@@ -2404,9 +2291,9 @@ public class CMClientApp {
 		long lFileSize = 0;
 		CMFileEvent fe = null;
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		
+
 		System.out.println("====== split a file, distribute to multiple servers, and merge");
-		
+
 		// check if the client logs in to all available servers
 		int nClientState = interInfo.getMyself().getState();
 		if(nClientState == CMInfo.CM_INIT || nClientState == CMInfo.CM_CONNECT)
@@ -2422,7 +2309,7 @@ public class CMClientApp {
 			if(nClientState == CMInfo.CM_INIT || nClientState == CMInfo.CM_CONNECT)
 			{
 				System.out.println("You must log in the additional server("+tserver.getServerName()
-						+")!");
+				+")!");
 				return;
 			}
 		}
@@ -2447,7 +2334,7 @@ public class CMClientApp {
 		m_eventHandler.setCurrentServerNum(interInfo.getAddServerList().size() + 1);
 		String[] filePieces = new String[interInfo.getAddServerList().size()+1];
 		m_eventHandler.setFilePieces(filePieces);
-		
+
 		// initialize the number of modified pieces
 		m_eventHandler.setRecvPieceNum(0);
 
@@ -2500,9 +2387,9 @@ public class CMClientApp {
 
 			// send piece to the corresponding additional server
 			String strAddServer = interInfo.getAddServerList().elementAt(i).getServerName();
-			
+
 			m_clientStub.send(fe, strAddServer);
-			
+
 			CMFileTransferManager.pushFile(strPieceName, strAddServer, m_clientStub.getCMInfo());
 		}
 		// for the last piece
@@ -2523,7 +2410,7 @@ public class CMClientApp {
 		// send the last piece to the default server
 		m_clientStub.send(fe, "SERVER");
 		CMFileTransferManager.pushFile(strPieceName, "SERVER", m_clientStub.getCMInfo());
-		
+
 		try {
 			raf.close();
 		} catch (IOException e) {
@@ -2542,7 +2429,7 @@ public class CMClientApp {
 		fe = null;
 		return;
 	}
-	
+
 	public void testMulticastChat()
 	{
 		CMInteractionInfo interInfo = m_clientStub.getCMInfo().getInteractionInfo();
@@ -2574,7 +2461,7 @@ public class CMClientApp {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		// make a CMInterestEvent.USER_TALK event
 		CMInterestEvent ie = new CMInterestEvent();
 		ie.setID(CMInterestEvent.USER_TALK);
@@ -2582,13 +2469,13 @@ public class CMClientApp {
 		ie.setHandlerGroup(myself.getCurrentGroup());
 		ie.setUserName(myself.getName());
 		ie.setTalk(strMessage);
-		
+
 		m_clientStub.multicast(ie, myself.getCurrentSession(), myself.getCurrentGroup());
 
 		ie = null;
 		return;
 	}
-	
+
 	public void testBlockingChannel()
 	{
 		int nChKey = -1;
@@ -2599,7 +2486,7 @@ public class CMClientApp {
 		CMConfigurationInfo confInfo = m_clientStub.getCMInfo().getConfigurationInfo();
 		CMInteractionInfo interInfo = m_clientStub.getCMInfo().getInteractionInfo();
 		boolean isSocketChannel = false;
-		
+
 		if(confInfo.getSystemType().equals("CLIENT"))
 		{
 			CMUser myself = interInfo.getMyself();
@@ -2609,7 +2496,7 @@ public class CMClientApp {
 				return;
 			}
 		}
-		
+
 		System.out.println("============= test blocking channel");
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -2640,7 +2527,7 @@ public class CMClientApp {
 			ne.printStackTrace();
 			return;
 		}
-		
+
 		if(isSocketChannel)
 		{
 			sc = m_clientStub.getBlockSocketChannel(nChKey, strServerName);
@@ -2661,7 +2548,7 @@ public class CMClientApp {
 			}
 			System.out.println("Blocking datagram channel found: key("+nChKey+")");
 		}
-		
+
 		CMUserEvent ue = new CMUserEvent();
 		ue.setStringID("reqRecv");
 		ue.setEventField(CMInfo.CM_STR, "user", m_clientStub.getMyself().getName());
@@ -2669,14 +2556,14 @@ public class CMClientApp {
 			ue.setEventField(CMInfo.CM_INT, "chType", Integer.toString(CMInfo.CM_SOCKET_CHANNEL));
 		else
 			ue.setEventField(CMInfo.CM_INT, "chType", Integer.toString(CMInfo.CM_DATAGRAM_CHANNEL));
-		
+
 		ue.setEventField(CMInfo.CM_INT, "chKey", Integer.toString(nChKey));
 		ue.setEventField(CMInfo.CM_INT, "recvPort", Integer.toString(nRecvPort));
 		m_clientStub.send(ue, strServerName);
-		
+
 		return;		
 	}
-	
+
 	public void testMeasureInputThroughput()
 	{
 		String strTarget = null;
@@ -2690,7 +2577,7 @@ public class CMClientApp {
 		else
 			System.out.format("Input network throughput from [%s] : %.2f%n", strTarget, fSpeed);
 	}
-	
+
 	public void testMeasureOutputThroughput()
 	{
 		String strTarget = null;
@@ -2711,7 +2598,7 @@ public class CMClientApp {
 		String strChannels = m_clientStub.getCurrentChannelInfo();
 		System.out.println(strChannels);
 	}
-	
+
 
 	public void testPrintConfigurations()
 	{
@@ -2719,7 +2606,7 @@ public class CMClientApp {
 		System.out.print("========== print all current configurations\n");
 		Path confPath = m_clientStub.getConfigurationHome().resolve("cm-client.conf");
 		strConfigurations = CMConfigurator.getConfigurations(confPath.toString());
-		
+
 		System.out.print("configuration file path: "+confPath.toString()+"\n");
 		for(String strConf : strConfigurations)
 		{
@@ -2727,9 +2614,9 @@ public class CMClientApp {
 			strFieldValuePair = strConf.split("\\s+");
 			System.out.print(strFieldValuePair[0]+" = "+strFieldValuePair[1]+"\n");
 		}
-		
+
 	}
-	
+
 	public void testChangeConfiguration()
 	{
 		boolean bRet = false;
@@ -2737,12 +2624,12 @@ public class CMClientApp {
 		String strValue = null;
 		System.out.println("========== change configuration");
 		Path confPath = m_clientStub.getConfigurationHome().resolve("cm-client.conf");
-		
+
 		System.out.print("Field name: ");
 		strField = m_scan.next();
 		System.out.print("Value: ");
 		strValue = m_scan.next();
-		
+
 		bRet = CMConfigurator.changeConfiguration(confPath.toString(), strField, strValue);
 		if(bRet)
 		{
@@ -2752,205 +2639,282 @@ public class CMClientApp {
 		{
 			System.err.println("The configuration change is failed!: ("+strField+"="+strValue+")");
 		}
-		
+
 		return;
 	}
-	
-	
+
+
 	public static void listRequest() //꼭 필요한 함수 --> 파일 리스트 요청
 	{
-	   CMInteractionInfo interInfo = m_clientStub.getCMInfo().getInteractionInfo();
-	   CMUser myself = interInfo.getMyself();
-	   
-	   if(myself.getState() != CMInfo.CM_SESSION_JOIN)
-	   {
-	      System.out.println("You should join a session and a group!");
-	      return;
-	   }
-	   
-	   String strInput = "listrequest";
-	   CMDummyEvent due = new CMDummyEvent();
-	   due.setHandlerSession(myself.getCurrentSession());
-	   due.setHandlerGroup(myself.getCurrentGroup());
-	   due.setDummyInfo(strInput);
-	   m_clientStub.send(due, "SERVER");
-	   due = null;
-	   
+		CMInteractionInfo interInfo = m_clientStub.getCMInfo().getInteractionInfo();
+		CMUser myself = interInfo.getMyself();
+
+		if(myself.getState() != CMInfo.CM_SESSION_JOIN)
+		{
+			System.out.println("You should join a session and a group!");
+			return;
+		}
+
+		String strInput = "listrequest";
+		CMDummyEvent due = new CMDummyEvent();
+		due.setHandlerSession(myself.getCurrentSession());
+		due.setHandlerGroup(myself.getCurrentGroup());
+		due.setDummyInfo(strInput);
+		m_clientStub.send(due, "SERVER");
+		due = null;
+
 	}
-	
-		public static void readNovel() throws IOException {
-			/*listrequest();
-			Scanner sc = new Scanner(System.in);
-		//System.out.println("읽을소설이름입력: ");
+
+	public static void readNovel() throws IOException {
+		Scanner sc = new Scanner(System.in);
+		while(true){
+			listRequest();
 			novelname = sc.next();
-			readText();*/
-			while(true){
-				listRequest();
-				Scanner sc = new Scanner(System.in);
-				novelname = sc.next();
-				File file = new File(".\\server-file-path\\common_directory\\"+novelname+".txt");
-				if(file.isFile()) break;
-				System.out.println("존재하지 않는 소설입니다. 다시 입력하세요.");
-			}
-			
-			readText();
+			File file = new File(".\\server-file-path\\common_directory\\"+novelname);
+			if(file.isFile()) break;
+			System.out.println("존재하지 않는 소설입니다. 다시 입력하세요.");
+			sc.close();
 		}
+
+		readText();
+	}
+
+	public static void appendNovel() throws IOException {
+		Scanner sc = new Scanner(System.in);
+		while(true){
+			listRequest();
+			novelname = sc.next();
+			File file = new File(".\\server-file-path\\common_directory\\"+novelname);
+			if(file.isFile()) break;
+			System.out.println("존재하지 않는 소설입니다. 다시 입력하세요.");
+			sc.close();
+		}
+
+		appendText();
+	}
+
+
+
+
+	public static void newText(){ //글 새로 쓰기(form: 제목 내용 작성자) 
+		JFrame frame = new JFrame("글새로쓰기");
+		frame.setSize(1000,500);
 		
-		public static void appendNovel() throws IOException {
-			while(true){
-				listRequest();
-				Scanner sc = new Scanner(System.in);
-				novelname = sc.next();
-				File file = new File(".\\server-file-path\\common_directory\\"+novelname+".txt");
-				if(file.isFile()) break;
-				System.out.println("존재하지 않는 소설입니다. 다시 입력하세요.");
+
+		titlebox.setText("");
+		textbox.setText("");
+		writerbox.setText("");
+
+		textbox.setLineWrap(true);
+		
+		//JScrollPane scroll3 = new JScrollPane(textbox);
+		//scroll3.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		
+		frame.getContentPane().add(titlelabel);
+		frame.getContentPane().add(titlebox);
+		frame.getContentPane().add(novellabel);
+		frame.getContentPane().add(textbox);
+		frame.getContentPane().add(writerlabel);
+		frame.getContentPane().add(writerbox);
+
+		frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(),BoxLayout.Y_AXIS));
+		frame.setVisible(true);   
+
+		JButton savebutton = new JButton("저장");
+		savebutton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					saveForNew();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-			appendText();
+		});
+		frame.getContentPane().add(savebutton, BorderLayout.SOUTH);
+
+		frame.setVisible(true);   
+	}   
+
+
+	public static void readText() throws IOException{ //글 읽기
+
+
+		String strFileName=".\\common_directory\\"+novelname;
+		String strFileOwner="SERVER";
+		m_clientStub.requestFile(strFileName,  strFileOwner, CMInfo.FILE_OVERWRITE);
+
+		File file = new File(".\\client-file-path\\"+novelname);
+		while(true){
+			try { 
+				Thread.sleep(100); 
+			}catch(InterruptedException e){  
+			} 
+			System.out.println("while..");
+			if(file.exists()) break; 
 		}
+
+		String oldtext="";
+		String str="";
+
+		FileReader reader = new FileReader(file);
+		BufferedReader buf = new BufferedReader(reader);
+
+		while((str = buf.readLine())==null){
+			reader = new FileReader(file);
+			buf = new BufferedReader(reader);
+			try { 
+				Thread.sleep(100); 
+			}catch(InterruptedException e){  
+			}
+		}
+
+		reader = new FileReader(file);
+		buf = new BufferedReader(reader);
+
+		while((str = buf.readLine())!=null){
+			oldtext += str+"\n";
+		}
+		buf.close();
+
+		JFrame frame = new JFrame("소설읽기");	
+		frame.setSize(1000,500);
+		JScrollPane scroll = new JScrollPane(oldtextbox);
+		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 	
-	   public static void readText() throws IOException{ //글 읽기
-		      JFrame frame = new JFrame("mycm");
-		      frame.setSize(1000,500);
-
-		      File file = new File(".\\server-file-path\\common_directory\\"+novelname+".txt");
-		      FileReader reader = new FileReader(file);
-		      BufferedReader buf = new BufferedReader(reader);
-		      String oldtext="";
-		      String str="";
-		      while((str = buf.readLine())!=null){
-		         oldtext += str+"\n";
-		      }
-		      buf.close();
-		      oldtextbox.setText(oldtext);
-		      oldtextbox.enable(false);
-		      frame.getContentPane().add(oldtextbox);
-		      frame.setVisible(true);   
-		   }
-		   
-		   
-		   public static void newText(){ //글 새로 쓰기(form: 제목 내용 작성자) 
-		      JFrame frame = new JFrame("mycm");
-		      frame.setSize(1000,500);
-
-		      titlebox.setText("");
-		      textbox.setText("");
-		      writerbox.setText("");
+		oldtextbox.setText(oldtext);
+		oldtextbox.enable(false);
+		oldtextbox.setLineWrap(true);
+		
+		//frame.getContentPane().add(oldtextbox);
+		frame.getContentPane().add(scroll);
+		frame.setVisible(true);   
+	}
 
 
-		      frame.getContentPane().add(titlelabel);
-		      frame.getContentPane().add(titlebox);
-		      frame.getContentPane().add(novellabel);
-		      frame.getContentPane().add(textbox);
-		      frame.getContentPane().add(writerlabel);
-		      frame.getContentPane().add(writerbox);
 
-		      frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(),BoxLayout.Y_AXIS));
+	@SuppressWarnings("deprecation")
+	public static void appendText() throws IOException{ //기존 글과 새로운 글을 합친다 (form: 내용 + 작성자)
+		JFrame frame = new JFrame("이어글쓰기");
+		frame.setSize(1000,500);
 
+		String strFileName=".\\common_directory\\"+novelname;
+		String strFileOwner="SERVER";
+		m_clientStub.requestFile(strFileName,  strFileOwner, CMInfo.FILE_OVERWRITE);
 
-		      JButton savebutton = new JButton("저장");
-		      savebutton.addActionListener(new ActionListener() {
-		         public void actionPerformed(ActionEvent arg0) {
-		            try {
-		               saveForNew();
-		            } catch (IOException e) {
-		               // TODO Auto-generated catch block
-		               e.printStackTrace();
-		            }
-		         }
-		      });
-		      frame.getContentPane().add(savebutton, BorderLayout.SOUTH);
-
-		      frame.setVisible(true);   
-		   }   
-		   
-		   
-		   
-		   @SuppressWarnings("deprecation")
-		   public static void appendText() throws IOException{ //기존 글과 새로운 글을 합친다 (form: 내용 + 작성자)
-		      JFrame frame = new JFrame("mycm");
-		      frame.setSize(1000,500);
-
-		      File file = new File(".\\server-file-path\\common_directory\\"+novelname+".txt");//서버의 공통디렉토리에 있는 파일을 requestfile요청하고 그 받아온파일을 읽어야함
-		      FileReader reader = new FileReader(file);
-		      BufferedReader buf = new BufferedReader(reader);
-		      String oldtext="";
-		      String str="";
-		      while((str = buf.readLine())!=null){
-		         oldtext += str+"\n";
-		      }
-		      buf.close();
-		      oldtextbox.setText(oldtext);
-		      oldtextbox.enable(false);
-
-		      textbox2.setText("");
-		      writerbox2.setText("");
-
-		      frame.getContentPane().add(oldtextbox);
-		      frame.getContentPane().add(novellabel2);
-		      frame.getContentPane().add(textbox2);
-		      frame.getContentPane().add(writerlabel2);
-		      frame.getContentPane().add(writerbox2);
-
-		      frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(),BoxLayout.Y_AXIS));
-		      //frame.setVisible(true);   
-
-		      JButton savebutton = new JButton("저장");
-		      savebutton.addActionListener(new ActionListener() {
-		         public void actionPerformed(ActionEvent arg0) {
-		            try {
-		               saveForAppend();
-		            } catch (IOException e) {
-		               // TODO Auto-generated catch block
-		               e.printStackTrace();
-		            }
-		         }
-		      });
-		      
-		      frame.getContentPane().add(savebutton, BorderLayout.SOUTH);
-
-		      frame.setVisible(true);   
-
-		   }
-		   
-		   public static void saveForAppend() throws IOException{ //기존 글 + 새로 작성한 글(내용+작성자)
-			      Calendar now=Calendar.getInstance();
-			      Date date=now.getTime();
-			      text = oldtextbox.getText()+"\n"+textbox2.getText()+"\n"+date+"-----------------------------------------"+writerbox2.getText();
-			      FileWriter fw = new FileWriter(".\\server-file-path\\common_directory\\"+novelname+".txt"); //서버의 공통디렉토리에 있는 파일을 requestfile요청하고 그 받아온파일을 읽어야함
-			      fw.write(text);
-			      fw.close();
-			      m_clientStub.pushFile(".\\client-file-path\\"+novelname+".txt","SERVER"); //
-
-			   }
+		File file = new File(".\\client-file-path\\"+novelname);
+		while(true){
+			try { 
+				Thread.sleep(100); 
+			}catch(InterruptedException e){  
+			} 
+			System.out.println("while..");
+			if(file.exists()) break; 
+		}
 
 
-		   public static void saveForNew() throws IOException{ //새로운 글 저장
-		      boolean bReturn = false;
-		      String title;
-		      
-		      Calendar now=Calendar.getInstance();
-		      Date date=now.getTime();
-		      text = "제목: "+titlebox.getText()+"\n"+textbox.getText()+"\n"+date+"-----------------------------------------"+writerbox.getText();
-		      System.out.println(text);
-		      FileWriter fw = new FileWriter("./client-file-path\\"+titlebox.getText()+".txt");
-		      title = titlebox.getText()+".txt";
-		      //for(int i=0; i<text.length(); i++)
-		      fw.write(text);
-		      fw.close();
-		      
-		   bReturn = m_clientStub.pushFile(".\\client-file-path\\"+title,"SERVER");
-		      
-		      
-		   }
+		String oldtext="";
+		String str="";
 
-	
+		FileReader reader = new FileReader(file);
+		BufferedReader buf = new BufferedReader(reader);
+
+		while((str = buf.readLine())==null){
+			reader = new FileReader(file);
+			buf = new BufferedReader(reader);
+			try { 
+				Thread.sleep(100); 
+			}catch(InterruptedException e){  
+			}
+		}
+
+		reader = new FileReader(file);
+		buf = new BufferedReader(reader);
+
+		while((str = buf.readLine())!=null){
+			oldtext += str+"\n";
+		}
+		buf.close();
+
+		JScrollPane scroll = new JScrollPane(oldtextbox);
+		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		
+		oldtextbox.setText(oldtext);
+		oldtextbox.enable(false);
+		oldtextbox.setLineWrap(true);
+		
+		 
+
+
+		textbox2.setText("");
+		writerbox2.setText("");
+
+
+	//	frame.getContentPane().add(oldtextbox);
+		frame.getContentPane().add(scroll);
+		frame.getContentPane().add(novellabel2);
+		frame.getContentPane().add(textbox2);
+		frame.getContentPane().add(writerlabel2);
+		frame.getContentPane().add(writerbox2);
+		frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(),BoxLayout.Y_AXIS));
+		//frame.setVisible(true);   
+
+		JButton savebutton = new JButton("저장");
+		savebutton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					saveForAppend();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+
+		frame.getContentPane().add(savebutton, BorderLayout.SOUTH);
+
+		frame.setVisible(true);   
+
+	}
+
+
+
+
+	public static void saveForAppend() throws IOException{ //기존 글 + 새로 작성한 글(내용+작성자)
+		text = oldtextbox.getText()+"\n"+textbox2.getText()+"\n"+Calendar.getInstance().getTime()+"-----------------------------------------"+writerbox2.getText();
+		FileWriter fw = new FileWriter(".\\client-file-path\\"+titlebox.getText()+".txt");
+		fw.write(text);
+		fw.close();
+
+		m_clientStub.pushFile(".\\client-file-path\\"+novelname,"SERVER"); 
+
+	}
+
+
+	public static void saveForNew() throws IOException{ //새로운 글 저장
+		String title;
+
+		text = "제목: "+titlebox.getText()+"\n"+textbox.getText()+"\n"+Calendar.getInstance().getTime()+"-----------------------------------------"+writerbox.getText();
+		System.out.println(text);
+		FileWriter fw = new FileWriter(".\\client-file-path\\"+titlebox.getText()+".txt");
+		title = titlebox.getText()+".txt";
+		//for(int i=0; i<text.length(); i++)
+		fw.write(text);
+		fw.close();
+
+		m_clientStub.pushFile(".\\client-file-path\\"+title,"SERVER");
+
+
+	}
+
+
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		CMClientApp client = new CMClientApp();
 		CMClientStub cmStub = client.getClientStub();
 		cmStub.setEventHandler(client.getClientEventHandler());
 		client.testStartCM();
-		
+
 		System.out.println("Client application is terminated.");
 	}
 

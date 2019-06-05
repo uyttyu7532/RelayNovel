@@ -1,3 +1,4 @@
+package cm;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.io.*;
@@ -365,7 +366,7 @@ public class CMClientEventHandler implements CMEventHandler {
 		{
 			System.out.println(titlelist[i]);
 		}
-		System.out.println("소설이름을 입력하세요: ");
+		System.out.println("소설이름을 입력하세요: (.txt포함) ");
 		return;
 	}
 	
@@ -527,10 +528,6 @@ public class CMClientEventHandler implements CMEventHandler {
 		case CMFileEvent.END_FILE_TRANSFER_CHAN:
 			System.out.println("["+fe.getSenderName()+"] completes to send file("+fe.getFileName()+", "
 					+fe.getFileSize()+" Bytes).");
-			
-			String frompath = ".\\server-file-path\"+\"/\"+\"common_directory"+fe.getFileName();
-			File file = new File(frompath);
-			file.delete();
 			
 			if(m_bDistFileProc)
 				processFile(fe.getFileName());

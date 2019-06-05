@@ -1,9 +1,9 @@
+package cm;
 
 import kr.ac.konkuk.ccslab.cm.entity.CMGroup;
 import kr.ac.konkuk.ccslab.cm.entity.CMMember;
 import kr.ac.konkuk.ccslab.cm.entity.CMSession;
 import kr.ac.konkuk.ccslab.cm.entity.CMUser;
-import kr.ac.konkuk.ccslab.cm.event.CMFileEvent;
 import kr.ac.konkuk.ccslab.cm.info.CMConfigurationInfo;
 import kr.ac.konkuk.ccslab.cm.info.CMInfo;
 import kr.ac.konkuk.ccslab.cm.info.CMInteractionInfo;
@@ -1315,23 +1315,6 @@ public class CMServerApp {
 	
 	
 	/*
-	public void makeFolder() {
-		String path = "C:\\Users\\user\\git\\CMTest\\CMTest\\server-file-path\\JIYOUNG100";//폴더경로
-		File Folder = new File(path);
-		
-		if(!Folder.exists()) {
-			try {
-				Folder.mkdir();
-				System.out.println("폴더 생성");
-			}
-			catch(Exception e) {
-				e.getStackTrace();
-			}
-		}else {
-			System.out.println("폴더가 이미 생성이 되었다.");
-		}
-		
-	}//골통디렉토리가 될 폴더
 
 	public void testSetFilePath()
 	{
