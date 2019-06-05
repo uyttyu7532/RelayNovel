@@ -35,6 +35,7 @@ import javax.swing.JScrollPane;
 public class CMClientApp {
 	private static CMClientStub m_clientStub;
 	private CMClientEventHandler m_eventHandler;
+	private CMClientApp m_clientApp;
 	private boolean m_bRun;
 	private Scanner m_scan = null;
 	static String novelname;
@@ -56,6 +57,7 @@ public class CMClientApp {
 		m_clientStub = new CMClientStub();
 		m_eventHandler = new CMClientEventHandler(m_clientStub);
 		m_bRun = true;
+		m_clientApp=this;
 	}
 
 	public CMClientStub getClientStub()
@@ -2673,9 +2675,8 @@ public class CMClientApp {
 			File file = new File(".\\server-file-path\\common_directory\\"+novelname);
 			if(file.isFile()) break;
 			System.out.println("존재하지 않는 소설입니다. 다시 입력하세요.");
-			sc.close();
 		}
-
+		sc.close();
 		readText();
 	}
 
@@ -2687,8 +2688,8 @@ public class CMClientApp {
 			File file = new File(".\\server-file-path\\common_directory\\"+novelname);
 			if(file.isFile()) break;
 			System.out.println("존재하지 않는 소설입니다. 다시 입력하세요.");
-			sc.close();
 		}
+		sc.close();
 
 		appendText();
 	}
@@ -2838,6 +2839,9 @@ public class CMClientApp {
 
 		JScrollPane scroll = new JScrollPane(oldtextbox);
 		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		
+		JScrollPane scroll2 = new JScrollPane(textbox2);
+		scroll2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		
 		oldtextbox.setText(oldtext);
 		oldtextbox.enable(false);
