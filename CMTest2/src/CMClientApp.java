@@ -2676,7 +2676,6 @@ public class CMClientApp {
 			if(file.isFile()) break;
 			System.out.println("존재하지 않는 소설입니다. 다시 입력하세요.");
 		}
-		sc.close();
 		readText();
 	}
 
@@ -2689,7 +2688,6 @@ public class CMClientApp {
 			if(file.isFile()) break;
 			System.out.println("존재하지 않는 소설입니다. 다시 입력하세요.");
 		}
-		sc.close();
 
 		appendText();
 	}

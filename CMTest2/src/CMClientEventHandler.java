@@ -27,6 +27,7 @@ import kr.ac.konkuk.ccslab.cm.stub.CMClientStub;
 
 public class CMClientEventHandler implements CMEventHandler {
 	private CMClientStub m_clientStub;
+	private CMClientApp m_clientApp;
 	private long m_lDelaySum;	// for forwarding simulation
 	private long m_lStartTime;	// for delay of SNS content downloading, distributed file processing
 	private int m_nEstDelaySum;	// for SNS downloading simulation
@@ -43,6 +44,7 @@ public class CMClientEventHandler implements CMEventHandler {
 		
 	public CMClientEventHandler(CMClientStub stub)
 	{
+		m_clientApp = null;
 		m_clientStub = stub;
 		m_lDelaySum = 0;
 		m_lStartTime = 0;
