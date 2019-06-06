@@ -2645,7 +2645,7 @@ public class CMClientApp {
 		return;
 	}
 
-
+//
 	public static void listRequest() //꼭 필요한 함수 --> 파일 리스트 요청
 	{
 		CMInteractionInfo interInfo = m_clientStub.getCMInfo().getInteractionInfo();
