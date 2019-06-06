@@ -528,6 +528,18 @@ public class CMClientEventHandler implements CMEventHandler {
 		case CMFileEvent.END_FILE_TRANSFER_CHAN:
 			System.out.println("["+fe.getSenderName()+"] completes to send file("+fe.getFileName()+", "
 					+fe.getFileSize()+" Bytes).");
+				
+			/*아래 코드는 공통 디렉토리에 있는 파일이 이어쓰기를 위해 불렸을 때를 위한 코드입니다
+			 * 1, 같은 이름의 파일이 있으면 서버의 서브 폴더에서 공디로 이동하지 않습니다.
+			 * 2, client가 이어쓰기를 위해 파일을 부른다.
+			 * 3, client가 파일을 받았다는 이벤트를 날려주면 (바로 지금 이 이벤트!)
+			 * 4, 공통디렉토리에서 불려나간 그 파일은 사라집니다.
+			 * 5, client가 작성을 다 마치고 push하면 이 이름의 파일은 공디안에 없기 때문에 바로 공디로 이동됩니다
+			 * */
+			String frompath = ".\\server-file-path\"+\"/\"+\"common_directory"+fe.getFileName();
+			File file = new File(frompath);
+			file.delete();
+				
 			
 			if(m_bDistFileProc)
 				processFile(fe.getFileName());
