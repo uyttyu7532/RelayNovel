@@ -1,4 +1,4 @@
-package cm;
+//package cm;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -2669,26 +2669,15 @@ public class CMClientApp {
 
 	public static void readNovel() throws IOException {
 		Scanner sc = new Scanner(System.in);
-		while(true){
-			listRequest();
-			novelname = sc.next();
-			File file = new File(".\\server-file-path\\common_directory\\"+novelname);
-			if(file.isFile()) break;
-			System.out.println("존재하지 않는 소설입니다. 다시 입력하세요.");
-		}
+		listRequest();
+		novelname = sc.next();
 		readText();
 	}
 
 	public static void appendNovel() throws IOException {
 		Scanner sc = new Scanner(System.in);
-		while(true){
-			listRequest();
-			novelname = sc.next();
-			File file = new File(".\\server-file-path\\common_directory\\"+novelname);
-			if(file.isFile()) break;
-			System.out.println("존재하지 않는 소설입니다. 다시 입력하세요.");
-		}
-
+		listRequest();
+		novelname = sc.next();
 		appendText();
 	}
 
@@ -2884,7 +2873,7 @@ public class CMClientApp {
 
 	public static void saveForAppend() throws IOException{ //기존 글 + 새로 작성한 글(내용+작성자)
 		text = oldtextbox.getText()+"\n"+textbox2.getText()+"\n"+Calendar.getInstance().getTime()+"-----------------------------------------"+writerbox2.getText();
-		FileWriter fw = new FileWriter(".\\client-file-path\\"+titlebox.getText()+".txt");
+		FileWriter fw = new FileWriter(".\\client-file-path\\"+novelname);
 		fw.write(text);
 		fw.close();
 
