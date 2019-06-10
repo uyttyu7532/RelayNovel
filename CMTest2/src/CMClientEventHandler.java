@@ -1,4 +1,4 @@
-package cm;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.io.*;
@@ -27,7 +27,6 @@ import kr.ac.konkuk.ccslab.cm.stub.CMClientStub;
 
 public class CMClientEventHandler implements CMEventHandler {
 	private CMClientStub m_clientStub;
-	private CMClientApp m_clientApp;
 	private long m_lDelaySum;	// for forwarding simulation
 	private long m_lStartTime;	// for delay of SNS content downloading, distributed file processing
 	private int m_nEstDelaySum;	// for SNS downloading simulation
@@ -41,7 +40,9 @@ public class CMClientEventHandler implements CMEventHandler {
 	private String[] m_filePieces;		// for distributed file processing
 	private int m_nMinNumWaitedEvents;  // for checking the completion of asynchronous castrecv service
 	private int m_nRecvReplyEvents;		// for checking the completion of asynchronous castrecv service
-		
+	private CMClientApp m_clientApp;	
+	
+	
 	public CMClientEventHandler(CMClientStub stub)
 	{
 		m_clientApp = null;
@@ -245,6 +246,7 @@ public class CMClientEventHandler implements CMEventHandler {
 		case CMSessionEvent.ADD_BLOCK_SOCKET_CHANNEL_ACK:
 			if(se.getReturnCode() == 0)
 			{
+			
 				System.err.println("Adding a blocking socket channel ("+se.getChannelName()+","+se.getChannelNum()
 					+") failed at the server!");
 			}
@@ -530,7 +532,7 @@ public class CMClientEventHandler implements CMEventHandler {
 		case CMFileEvent.END_FILE_TRANSFER_CHAN:
 			System.out.println("["+fe.getSenderName()+"] completes to send file("+fe.getFileName()+", "
 					+fe.getFileSize()+" Bytes).");
-				
+			
 			/*아래 코드는 공통 디렉토리에 있는 파일이 이어쓰기를 위해 불렸을 때를 위한 코드입니다
 			 * 1, 같은 이름의 파일이 있으면 서버의 서브 폴더에서 공디로 이동하지 않습니다.
 			 * 2, client가 이어쓰기를 위해 파일을 부른다.
@@ -538,10 +540,11 @@ public class CMClientEventHandler implements CMEventHandler {
 			 * 4, 공통디렉토리에서 불려나간 그 파일은 사라집니다.
 			 * 5, client가 작성을 다 마치고 push하면 이 이름의 파일은 공디안에 없기 때문에 바로 공디로 이동됩니다
 			 * */
-			String frompath = ".\\server-file-path\"+\"/\"+\"common_directory"+fe.getFileName();
+			/*
+			String frompath = ".\\server-file-path\\common_directory"+fe.getFileName();
 			File file = new File(frompath);
 			file.delete();
-				
+			*/
 			
 			if(m_bDistFileProc)
 				processFile(fe.getFileName());
