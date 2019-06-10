@@ -1,4 +1,4 @@
-package cm;
+
 
 import kr.ac.konkuk.ccslab.cm.entity.CMGroup;
 import kr.ac.konkuk.ccslab.cm.entity.CMMember;
@@ -48,6 +48,12 @@ public class CMServerApp {
 	// test methods
 	public void startTest()
 	{
+		String path=".\\server-file-path"+"/"+"common_directory";
+		File dir = new File(path);//공통디렉토리를 만든다 폴더
+		
+			   if (!dir.exists()) { //폴더 없으면 폴더 생성
+		            dir.mkdirs();
+		        }
 		System.out.println("Server application starts.");
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		m_scan = new Scanner(System.in);
