@@ -1,8 +1,11 @@
-package cm;
+
 import java.util.Iterator;
 import java.io.*;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 import kr.ac.konkuk.ccslab.cm.entity.CMUser;
 import kr.ac.konkuk.ccslab.cm.event.CMDummyEvent;
@@ -34,7 +37,18 @@ public class CMServerEventHandler implements CMEventHandler {
 		m_nCheckCount = 0;
 		m_bDistFileProc = false;
 	}
-	
+	// Java IO Stream Fullbuffer Copy 공통디렉토리로 복사하는 함수
+	public static void FileIoCopy(String source, String dest) throws FileNotFoundException, IOException {
+		try (FileInputStream fis = new FileInputStream(source); 
+				FileOutputStream fos = new FileOutputStream(dest);) {
+			int availableLen = fis.available();
+			byte[] buf = new byte[availableLen];
+			fis.read(buf);
+			fos.write(buf);
+		}
+	}
+
+
 	@Override
 	public void processEvent(CMEvent cme) {
 		// TODO Auto-generated method stub
@@ -369,16 +383,37 @@ public class CMServerEventHandler implements CMEventHandler {
 			
 			String strFile = fe.getFileName();
 			String beforeFilePath = ".\\server-file-path\\"+fe.getSenderName()+"\\"+strFile;//가지고 올 경로와 파일이름
-			String path=".\\server-file-path"+"/"+"common_directory";//커먼디렉토리의 경로
-			String filePath = path+"/"+strFile;//새 이름으로 변경-->우리는 필요 없음 그냥 그이름 사용
-			File dir = new File(path);//공통디렉토리를 만든다 폴더
+			//String path=".\\server-file-path"+"/"+"common_directory";//커먼디렉토리의 경로
+			String path=".\\server-file-path\\common_directory";//커먼디렉토리의 경로
+			String filePath = path+"\\"+strFile;//새 이름으로 변경-->우리는 필요 없음 그냥 그이름 사용
 			
+			try {
+				FileIoCopy(beforeFilePath,filePath);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("복사성공!!");
+			
+			//File dir = new File(path);//공통디렉토리를 만든다 폴더
+			/*
 				   if (!dir.exists()) { //폴더 없으면 폴더 생성
 			            dir.mkdirs();
 			        }
-				   File file =new File(beforeFilePath); //새로운 파일을 만든다
-				   file.renameTo(new File(filePath));
+			        */
+	               //File f = new File(strFile);
+	    	       //if (f.isFile()) {System.out.print("파일 ㅇㅆ음 ");}
+				  // File file =new File(beforeFilePath); //새로운 파일을 만든다
+				   //if (file.isFile()) {System.out.print("파일 ㅇㅆ음 ");}
+				   //file.renameTo(new File(filePath));
+			
+				   
 				System.out.println("저장되었습니다.");
+				
+			
 			
 			
 			if(m_bDistFileProc)
